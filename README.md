@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Wipuu Labs — AI Lead Qualification
 
-## Getting Started
+A Next.js demo for a software agency landing page with a guided lead-qualification chatbot and n8n automation (MiniMax AI summary + Google Sheets).
 
-First, run the development server:
+## Stack
+
+- **Frontend:** Next.js 16, TypeScript, Tailwind CSS
+- **Automation:** n8n (webhook → MiniMax AI → Google Sheets)
+- **Hosting:** Vercel
+
+## Features
+
+- Landing page (hero, services, why us, testimonials, FAQ, contact)
+- Floating AI chat widget with multi-step flow:
+  1. Service type
+  2. Budget range
+  3. Project timeline
+  4. Contact details
+- Lead scoring (High / Medium / Low) from budget + timeline
+- `POST /api/leads` → forwards to n8n webhook
+- Duplicate protection (client localStorage + server 5-minute window)
+
+## Getting started
 
 ```bash
+npm install
+cp .env.example .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Description |
+|----------|-------------|
+| `N8N_WEBHOOK_URL` | Full n8n webhook URL. If unset in development, leads are logged to the server console. Required in production. |
 
-## Learn More
+## n8n setup
 
-To learn more about Next.js, take a look at the following resources:
+1. Import `n8n/lead-qualification-workflow.json` into n8n.
+2. Follow **`n8n/SETUP.md`** — **OpenAI** node (Text → Message a Model); OpenAI or MiniMax credential + matching model ID.
+3. Configure **Google Sheets** (OAuth)
+4. Create a Google Sheet named **Leads** with columns:  
+   `Timestamp`, `Name`, `Email`, `Company`, `Phone`, `Service`, `Budget`, `Timeline`, `Score`, `Status`  
+   (AI summary goes to **email** only, not the sheet.)
+5. Replace placeholder Sheet ID and credential IDs in the workflow nodes.
+6. Configure **Email Lead Summary** (Gmail) with your admin address and Gmail OAuth.
+7. Activate the workflow and copy the **Production** webhook URL into `N8N_WEBHOOK_URL`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project structure
 
-## Deploy on Vercel
+```
+app/
+  api/leads/route.ts      # Lead submission API
+  page.tsx                # Landing page
+components/
+  chat/                   # Lead chat widget
+  landing/                # Landing sections
+lib/
+  chat/                   # Flow, scoring, validation
+  landing-content.ts      # Site copy
+n8n/
+  lead-qualification-workflow.json
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Lead scoring
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Budget | Weight |
+|--------|--------|
+| <$10K | 1 |
+| $10K–$25K | 2 |
+| $25K–$50K | 3 |
+| $50K+ | 4 |
+
+| Timeline | Weight |
+|----------|--------|
+| ASAP | 4 |
+| 1–2 months | 3 |
+| 2–4 months | 2 |
+| 4+ months | 1 |
+
+- **High:** total ≥ 6, or $50K+ with ASAP / 1–2 months  
+- **Low:** total ≤ 3  
+- **Medium:** everything else  
+
+## Deploy (Vercel)
+
+1. Push to GitHub.
+2. Import project in Vercel.
+3. Set `N8N_WEBHOOK_URL` in project environment variables.
+4. Deploy.

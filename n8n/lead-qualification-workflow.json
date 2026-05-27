@@ -1,0 +1,303 @@
+{
+  "name": "Wipuu Labs - Lead Qualification",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "wipuu-lead",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "webhookId": "wipuu-lead-webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json;\nconst lead = raw.body && typeof raw.body === 'object' ? raw.body : raw;\n\nif (!lead.email) {\n  throw new Error('Webhook payload missing email.');\n}\n\nconst userPrompt = `Draft an internal sales brief from this inbound website inquiry.\n\nContact\n- Name: ${lead.name ?? 'Not provided'}\n- Email: ${lead.email}\n- Company: ${lead.company || 'Not provided'}\n- Phone: ${lead.phone || 'Not provided'}\n\nQualification\n- Service needed: ${lead.service ?? 'Not specified'}\n- Budget: ${lead.budget ?? 'Not specified'}\n- Timeline: ${lead.timeline ?? 'Not specified'}\n- Lead score: ${lead.score ?? 'Not scored'}`;\n\nreturn [\n  {\n    json: {\n      timestamp: lead.timestamp ?? new Date().toISOString(),\n      name: lead.name ?? '',\n      email: lead.email,\n      company: lead.company ?? '',\n      phone: lead.phone ?? '',\n      service: lead.service ?? '',\n      budget: lead.budget ?? '',\n      timeline: lead.timeline ?? '',\n      score: lead.score ?? '',\n      status: lead.status ?? 'New',\n      userPrompt,\n    },\n  },\n];"
+      },
+      "id": "normalize-fields",
+      "name": "Normalize Lead Fields",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [220, 0]
+    },
+    {
+      "parameters": {
+        "resource": "text",
+        "operation": "message",
+        "modelId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "MiniMax-M2.5"
+        },
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are a senior sales coordinator at Wipuu Labs, a software development agency.\n\nOutput ONLY the final internal brief. Strict rules:\n- Never show reasoning, planning, or chain-of-thought.\n- Never use reasoning or thinking tags in the output.\n- Do not invent facts (location, industry, revenue) unless given in the user message.\n- Plain text only: no markdown, no asterisks, no bullet symbols.\n- 150-220 words, professional tone for an internal sales email.\n\nUse exactly these section headers on their own line:\nLEAD OVERVIEW\nPROJECT FIT\nBUDGET & TIMELINE\nRECOMMENDED NEXT STEPS\n\nUnder RECOMMENDED NEXT STEPS, write three numbered lines: 1. 2. 3."
+            },
+            {
+              "content": "={{ $json.userPrompt }}",
+              "role": "user"
+            }
+          ]
+        },
+        "simplify": true,
+        "options": {
+          "maxTokens": 1024,
+          "temperature": 0.3
+        }
+      },
+      "id": "openai-summary",
+      "name": "OpenAI Lead Summary",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [440, 0],
+      "credentials": {
+        "openAiApi": {
+          "id": "REPLACE_OPENAI_CREDENTIAL",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const res = $input.first().json;\n\nlet raw =\n  res.message?.content ??\n  res.choices?.[0]?.message?.content ??\n  res.output_text ??\n  res.text;\n\nif (!raw) {\n  throw new Error(\n    `No summary in model response: ${JSON.stringify(res).slice(0, 500)}`,\n  );\n}\n\nfunction stripModelArtifacts(text) {\n  let s = String(text);\n  const blocks = [\n    /<think>[\\s\\S]*?<\\/redacted_thinking>/gi,\n    /[\\s\\S]*?<\\/think>/gi,\n    /<thinking>[\\s\\S]*?<\\/thinking>/gi,\n  ];\n  for (const pattern of blocks) {\n    s = s.replace(pattern, '');\n  }\n  s = s.replace(/\\*\\*([^*]+)\\*\\*/g, '$1');\n  return s.replace(/\\n{3,}/g, '\\n\\n').trim();\n}\n\nconst summary = stripModelArtifacts(raw);\n\nif (summary.length < 80) {\n  throw new Error('Summary too short after cleanup; check model output.');\n}\n\nreturn [{ json: { summary } }];"
+      },
+      "id": "extract-summary",
+      "name": "Extract Summary Text",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [660, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "const lead = $('Normalize Lead Fields').item.json;\nconst summary = $input.first().json.summary;\n\nfunction esc(value) {\n  return String(value ?? '')\n    .replace(/&/g, '&amp;')\n    .replace(/</g, '&lt;')\n    .replace(/>/g, '&gt;')\n    .replace(/\"/g, '&quot;');\n}\n\nconst scoreLabel = lead.score || 'Unscored';\nconst serviceLabel = lead.service || 'General inquiry';\nconst emailSubject = `[Wipuu Labs] New ${scoreLabel} lead — ${lead.name || 'Unknown'} (${serviceLabel})`;\n\nconst emailBodyText = [\n  'Hello team,',\n  '',\n  'A new lead was captured via the website qualification chat.',\n  '',\n  'CONTACT',\n  `Name: ${lead.name || '—'}`,\n  `Email: ${lead.email}`,\n  `Company: ${lead.company || '—'}`,\n  `Phone: ${lead.phone || '—'}`,\n  '',\n  'QUALIFICATION',\n  `Service: ${lead.service || '—'}`,\n  `Budget: ${lead.budget || '—'}`,\n  `Timeline: ${lead.timeline || '—'}`,\n  `Score: ${scoreLabel}`,\n  '',\n  '—'.repeat(40),\n  '',\n  summary,\n  '',\n  '—'.repeat(40),\n  `Submitted: ${lead.timestamp}`,\n].join('\\n');\n\nconst emailBodyHtml = `<!DOCTYPE html>\n<html>\n<body style=\"font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #1e293b; line-height: 1.55;\">\n<p>Hello team,</p>\n<p>A new lead was captured via the website qualification chat.</p>\n<table cellpadding=\"8\" cellspacing=\"0\" style=\"border-collapse: collapse; margin: 16px 0;\">\n<tr><td style=\"color:#64748b;width:120px;\"><strong>Name</strong></td><td>${esc(lead.name)}</td></tr>\n<tr><td style=\"color:#64748b;\"><strong>Email</strong></td><td><a href=\"mailto:${esc(lead.email)}\">${esc(lead.email)}</a></td></tr>\n<tr><td style=\"color:#64748b;\"><strong>Company</strong></td><td>${esc(lead.company || '—')}</td></tr>\n<tr><td style=\"color:#64748b;\"><strong>Phone</strong></td><td>${esc(lead.phone || '—')}</td></tr>\n<tr><td style=\"color:#64748b;\"><strong>Service</strong></td><td>${esc(lead.service)}</td></tr>\n<tr><td style=\"color:#64748b;\"><strong>Budget</strong></td><td>${esc(lead.budget)}</td></tr>\n<tr><td style=\"color:#64748b;\"><strong>Timeline</strong></td><td>${esc(lead.timeline)}</td></tr>\n<tr><td style=\"color:#64748b;\"><strong>Score</strong></td><td>${esc(scoreLabel)}</td></tr>\n</table>\n<hr style=\"border:none;border-top:1px solid #e2e8f0;margin:20px 0;\" />\n<div style=\"white-space:pre-wrap;\">${esc(summary)}</div>\n<p style=\"color:#64748b;font-size:12px;margin-top:24px;\">Submitted ${esc(lead.timestamp)}</p>\n</body>\n</html>`;\n\nreturn [\n  {\n    json: {\n      emailSubject,\n      emailBody: emailBodyHtml,\n      emailBodyText,\n    },\n  },\n];"
+      },
+      "id": "format-email",
+      "name": "Format Lead Email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [880, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "const lead = $('Normalize Lead Fields').item.json;\nconst scoreLabel = lead.score || 'Unscored';\n\nreturn [\n  {\n    json: {\n      Timestamp: lead.timestamp,\n      Name: lead.name ?? '',\n      Email: lead.email,\n      Company: lead.company ?? '',\n      Phone: lead.phone ?? '',\n      Service: lead.service ?? '',\n      Budget: lead.budget ?? '',\n      Timeline: lead.timeline ?? '',\n      Score: scoreLabel,\n      Status: lead.status ?? 'New',\n    },\n  },\n];"
+      },
+      "id": "prepare-sheet-row",
+      "name": "Prepare Sheet Row",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1100, 0]
+    },
+    {
+      "parameters": {
+        "resource": "sheet",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "REPLACE_WITH_GOOGLE_SHEET_ID"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Leads"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Timestamp": "={{ $json.Timestamp }}",
+            "Name": "={{ $json.Name }}",
+            "Email": "={{ $json.Email }}",
+            "Company": "={{ $json.Company }}",
+            "Phone": "={{ $json.Phone }}",
+            "Service": "={{ $json.Service }}",
+            "Budget": "={{ $json.Budget }}",
+            "Timeline": "={{ $json.Timeline }}",
+            "Score": "={{ $json.Score }}",
+            "Status": "={{ $json.Status }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Service",
+              "displayName": "Service",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Budget",
+              "displayName": "Budget",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Timeline",
+              "displayName": "Timeline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Score",
+              "displayName": "Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "google-sheets",
+      "name": "Append to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [1320, 0],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "sendTo": "REPLACE_WITH_ADMIN_EMAIL",
+        "subject": "={{ $('Format Lead Email').item.json.emailSubject }}",
+        "emailType": "html",
+        "message": "={{ $('Format Lead Email').item.json.emailBody }}",
+        "options": {
+          "senderName": "Wipuu Labs Leads"
+        }
+      },
+      "id": "gmail-notify",
+      "name": "Email Lead Summary",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1540, 0],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REPLACE_GMAIL_CREDENTIAL",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"ok\": true, \"score\": $('Normalize Lead Fields').item.json.score } }}",
+        "options": {}
+      },
+      "id": "respond-webhook",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1760, 0]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "Normalize Lead Fields", "type": "main", "index": 0 }]]
+    },
+    "Normalize Lead Fields": {
+      "main": [[{ "node": "OpenAI Lead Summary", "type": "main", "index": 0 }]]
+    },
+    "OpenAI Lead Summary": {
+      "main": [[{ "node": "Extract Summary Text", "type": "main", "index": 0 }]]
+    },
+    "Extract Summary Text": {
+      "main": [[{ "node": "Format Lead Email", "type": "main", "index": 0 }]]
+    },
+    "Format Lead Email": {
+      "main": [[{ "node": "Prepare Sheet Row", "type": "main", "index": 0 }]]
+    },
+    "Prepare Sheet Row": {
+      "main": [[{ "node": "Append to Google Sheets", "type": "main", "index": 0 }]]
+    },
+    "Append to Google Sheets": {
+      "main": [[{ "node": "Email Lead Summary", "type": "main", "index": 0 }]]
+    },
+    "Email Lead Summary": {
+      "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}
