@@ -7,7 +7,6 @@ import {
   Layers,
   Palette,
   Smartphone,
-  Sparkles,
 } from "lucide-react";
 
 export const site = {
@@ -110,7 +109,7 @@ export const whyChooseUs: WhyChooseItem[] = [
     title: "Full-stack + AI expertise",
     description:
       "Traditional product engineering paired with practical AI—chatbots, scoring, summaries, and workflow automation.",
-    icon: Sparkles,
+    icon: Bot,
   },
   {
     title: "Global remote team",

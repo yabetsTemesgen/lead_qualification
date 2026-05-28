@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, MessageSquare, Sparkles, X } from "lucide-react";
+import { Binary, Menu, MessageSquare, X } from "lucide-react";
 import { useEffect, useId, useState } from "react";
 import { openLeadChat } from "@/components/chat/lead-chat-widget";
 import { OpenChatTrigger } from "@/components/chat/open-chat-trigger";
@@ -44,7 +44,7 @@ export function SiteHeader() {
         <div className="mx-auto flex h-18 w-full max-w-7xl items-center justify-between gap-4 px-6 lg:grid lg:grid-cols-[auto_1fr_auto] lg:gap-10 lg:px-8">
           <Link href="/" className="flex min-w-0 items-center gap-3" onClick={closeMenu}>
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-cyan-400/15 text-cyan-300 ring-1 ring-cyan-300/25">
-              <Sparkles className="h-5 w-5" />
+              <Binary className="h-5 w-5" />
             </div>
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold tracking-[0.24em] text-gradient-brand uppercase">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
-import { Loader2, MessageSquare, Send, Sparkles, X } from "lucide-react";
+import { Binary, Loader2, MessageSquare, Send, X } from "lucide-react";
 import { SUBMITTED_STORAGE_KEY } from "@/lib/chat/flow";
 import {
   CONTACT_CONSENT_CLARIFY_MESSAGE,
@@ -64,6 +64,12 @@ export function LeadChatWidget() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const submissionIdRef = useRef(crypto.randomUUID());
 
+  const focusInput = useCallback(() => {
+    requestAnimationFrame(() => {
+      inputRef.current?.focus();
+    });
+  }, []);
+
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
@@ -71,6 +77,12 @@ export function LeadChatWidget() {
   useEffect(() => {
     if (open) scrollToBottom();
   }, [open, messages, isTyping, step, scrollToBottom]);
+
+  useEffect(() => {
+    if (open && step === "chatting" && !isTyping && !alreadySubmitted) {
+      focusInput();
+    }
+  }, [open, step, isTyping, alreadySubmitted, messages, focusInput]);
 
   useEffect(() => {
     try {
@@ -190,6 +202,7 @@ export function LeadChatWidget() {
           ...prev,
           createMessage("assistant", CONTACT_CONSENT_DECLINED_MESSAGE),
         ]);
+        focusInput();
         return;
       }
       if (consentDecision === null && contactConsent === "pending") {
@@ -197,6 +210,7 @@ export function LeadChatWidget() {
           ...prev,
           createMessage("assistant", CONTACT_CONSENT_CLARIFY_MESSAGE),
         ]);
+        focusInput();
         return;
       }
     }
@@ -278,9 +292,6 @@ export function LeadChatWidget() {
       setError("Network error. Please check your connection.");
     } finally {
       setIsTyping(false);
-      if (step === "chatting") {
-        inputRef.current?.focus();
-      }
     }
   };
 
@@ -425,7 +436,7 @@ export function LeadChatWidget() {
           <header className="flex items-center justify-between border-b border-white/10 bg-slate-900/80 px-4 py-3">
             <div className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-400/15 text-cyan-300">
-                <Sparkles className="h-4 w-4" />
+                <Binary className="h-4 w-4" />
               </div>
               <div>
                 <p className="text-sm font-semibold text-white">
@@ -444,7 +455,7 @@ export function LeadChatWidget() {
             </button>
           </header>
 
-          <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
+          <div className="scrollbar-hidden flex-1 space-y-3 overflow-y-auto px-4 py-4">
             {messages.map((msg) => (
               <div
                 key={msg.id}
@@ -464,9 +475,17 @@ export function LeadChatWidget() {
 
             {isTyping ? (
               <div className="flex justify-start">
-                <div className="inline-flex items-center gap-2 rounded-lg bg-white/5 px-3.5 py-2.5 text-sm text-slate-400">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Typing…
+                <div
+                  className="inline-flex items-center rounded-lg bg-white/5 px-3.5 py-2.5 text-sm text-slate-400"
+                  aria-label="Thinking"
+                  role="status"
+                >
+                  Thinking
+                  <span className="chat-thinking-dots inline-flex" aria-hidden>
+                    <span>.</span>
+                    <span>.</span>
+                    <span>.</span>
+                  </span>
                 </div>
               </div>
             ) : null}
@@ -515,10 +534,10 @@ export function LeadChatWidget() {
                   </div>
                 ) : null}
 
-                <div className="flex gap-2">
+                <div className="flex items-center gap-2">
                   <textarea
                     ref={inputRef}
-                    rows={2}
+                    rows={1}
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={handleKeyDown}
@@ -528,13 +547,14 @@ export function LeadChatWidget() {
                         ? "Reply yes or no…"
                         : "Enter Your Message…"
                     }
-                    className="min-h-[44px] flex-1 resize-none rounded-md border border-white/15 bg-slate-950/80 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-cyan-300/50 focus:outline-none disabled:opacity-60"
+                    className="h-11 flex-1 resize-none rounded-md border border-white/15 bg-slate-950/80 px-3 py-2 text-sm leading-normal text-white placeholder:text-slate-500 focus:border-cyan-300/50 focus:outline-none disabled:opacity-60"
                   />
                   <button
                     type="button"
+                    onMouseDown={(e) => e.preventDefault()}
                     onClick={() => void sendMessage()}
                     disabled={!input.trim() || isTyping}
-                    className="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-md bg-gradient-brand disabled:cursor-not-allowed disabled:opacity-40"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-gradient-brand disabled:cursor-not-allowed disabled:opacity-40"
                     aria-label="Send message"
                   >
                     <Send className="h-4 w-4" />

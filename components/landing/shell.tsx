@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Sparkles } from "lucide-react";
+import { Binary } from "lucide-react";
 import { SiteHeader } from "@/components/landing/site-header";
 import { navLinks, site } from "@/lib/landing-content";
 
@@ -23,7 +23,7 @@ export function SiteFooter() {
         <div className="max-w-sm">
           <Link href="/" className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-cyan-400/15 text-cyan-300 ring-1 ring-cyan-300/25">
-              <Sparkles className="h-4 w-4" />
+              <Binary className="h-4 w-4" />
             </div>
             <span className="font-semibold text-white">
               {site.name} {site.tagline}

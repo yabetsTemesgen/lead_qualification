@@ -8,7 +8,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-raleway);
   --font-mono: var(--font-geist-mono);
 }
 
@@ -19,6 +19,7 @@
 html {
   scroll-behavior: smooth;
   overflow-x: clip;
+  scroll-padding-top: 5.5rem;
 }
 
 body {
@@ -26,13 +27,21 @@ body {
   overflow-x: clip;
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-raleway), Arial, Helvetica, sans-serif;
   text-rendering: optimizeLegibility;
 }
 
 a {
   color: inherit;
   text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
 }
 
 ::selection {
@@ -245,6 +254,47 @@ a {
   transition-delay: 0.12s;
 }
 
+@keyframes chat-thinking-dot {
+  0%,
+  20% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  80%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.chat-thinking-dots span {
+  animation: chat-thinking-dot 1.4s ease-in-out infinite;
+}
+
+.chat-thinking-dots span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.chat-thinking-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.chat-thinking-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.scrollbar-hidden {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .service-card-idle::before,
   .service-card-idle::after {
@@ -256,5 +306,10 @@ a {
   .service-card-active {
     transition-duration: 0.01ms;
     transition-delay: 0ms;
+  }
+
+  .chat-thinking-dots span {
+    animation: none;
+    opacity: 1;
   }
 }
