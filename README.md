@@ -11,11 +11,7 @@ A Next.js demo for a software agency landing page with a guided lead-qualificati
 ## Features
 
 - Landing page (hero, services, why us, testimonials, FAQ, contact)
-- Floating AI chat widget with multi-step flow:
-  1. Service type
-  2. Budget range
-  3. Project timeline
-  4. Contact details
+- Conversational AI chat widget (answers service questions, gathers project + contact details from natural dialogue)
 - Lead scoring (High / Medium / Low) from budget + timeline
 - `POST /api/leads` → forwards to n8n webhook
 - Duplicate protection (client localStorage + server 5-minute window)
@@ -34,6 +30,9 @@ Open [http://localhost:3000](http://localhost:3000).
 
 | Variable | Description |
 |----------|-------------|
+| `OPENAI_API_KEY` | API key for `/api/chat` (OpenAI or MiniMax OpenAI-compatible). Required for conversational chat. |
+| `OPENAI_BASE_URL` | Optional. Default `https://api.openai.com/v1`. For MiniMax: `https://api.minimax.io/v1` |
+| `OPENAI_MODEL` | Optional. Default `gpt-4o-mini`. For MiniMax e.g. `MiniMax-M2.5` |
 | `N8N_WEBHOOK_URL` | Full n8n webhook URL. If unset in development, leads are logged to the server console. Required in production. |
 
 ## n8n setup
@@ -41,9 +40,9 @@ Open [http://localhost:3000](http://localhost:3000).
 1. Import `n8n/lead-qualification-workflow.json` into n8n.
 2. Follow **`n8n/SETUP.md`** — **OpenAI** node (Text → Message a Model); OpenAI or MiniMax credential + matching model ID.
 3. Configure **Google Sheets** (OAuth)
-4. Create a Google Sheet named **Leads** with columns:  
-   `Timestamp`, `Name`, `Email`, `Company`, `Phone`, `Service`, `Budget`, `Timeline`, `Score`, `Status`  
-   (AI summary goes to **email** only, not the sheet.)
+4. Create a Google Sheet tab **Leads** with row 1:  
+   `Timestamp`, `Name`, `Email`, `Phone`, `Service`, `Budget`, `Timeline`, `Score`, `Status`  
+   (Phone is optional on the form — empty in the sheet when omitted. Company is in the **email**.)
 5. Replace placeholder Sheet ID and credential IDs in the workflow nodes.
 6. Configure **Email Lead Summary** (Gmail) with your admin address and Gmail OAuth.
 7. Activate the workflow and copy the **Production** webhook URL into `N8N_WEBHOOK_URL`.

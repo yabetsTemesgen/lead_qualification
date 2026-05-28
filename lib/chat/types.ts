@@ -35,10 +35,26 @@ export type LeadFormData = {
   phone?: string;
 };
 
-export type ChatStep = "service" | "budget" | "timeline" | "contact" | "submitting" | "success";
+export type LeadDraft = {
+  fullName?: string | null;
+  email?: string | null;
+  companyName?: string | null;
+  phone?: string | null;
+  service?: string | null;
+  budget?: string | null;
+  timeline?: string | null;
+  projectSummary?: string | null;
+};
+
+export type ChatUiStep = "chatting" | "contact" | "submitting" | "success";
 
 export type ChatMessage = {
   id: string;
-  role: "bot" | "user";
+  role: "user" | "assistant";
   text: string;
+};
+
+export type ChatTurn = {
+  role: "user" | "assistant";
+  content: string;
 };

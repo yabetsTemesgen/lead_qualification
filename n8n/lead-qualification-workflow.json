@@ -86,7 +86,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const lead = $('Normalize Lead Fields').item.json;\nconst scoreLabel = lead.score || 'Unscored';\n\nreturn [\n  {\n    json: {\n      Timestamp: lead.timestamp,\n      Name: lead.name ?? '',\n      Email: lead.email,\n      Company: lead.company ?? '',\n      Phone: lead.phone ?? '',\n      Service: lead.service ?? '',\n      Budget: lead.budget ?? '',\n      Timeline: lead.timeline ?? '',\n      Score: scoreLabel,\n      Status: lead.status ?? 'New',\n    },\n  },\n];"
+        "jsCode": "const lead = $('Normalize Lead Fields').item.json;\nconst scoreLabel = lead.score || 'Unscored';\n\n// Column order must match Google Sheet row 1:\n// Timestamp | Name | Email | Phone | Service | Budget | Timeline | Score | Status\nreturn [\n  {\n    json: {\n      Timestamp: lead.timestamp,\n      Name: lead.name ?? '',\n      Email: lead.email,\n      Phone: lead.phone ?? '',\n      Service: lead.service ?? '',\n      Budget: lead.budget ?? '',\n      Timeline: lead.timeline ?? '',\n      Score: scoreLabel,\n      Status: lead.status ?? 'New',\n    },\n  },\n];"
       },
       "id": "prepare-sheet-row",
       "name": "Prepare Sheet Row",
@@ -109,114 +109,12 @@
           "value": "Leads"
         },
         "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "Timestamp": "={{ $json.Timestamp }}",
-            "Name": "={{ $json.Name }}",
-            "Email": "={{ $json.Email }}",
-            "Company": "={{ $json.Company }}",
-            "Phone": "={{ $json.Phone }}",
-            "Service": "={{ $json.Service }}",
-            "Budget": "={{ $json.Budget }}",
-            "Timeline": "={{ $json.Timeline }}",
-            "Score": "={{ $json.Score }}",
-            "Status": "={{ $json.Status }}"
-          },
-          "matchingColumns": [],
-          "schema": [
-            {
-              "id": "Timestamp",
-              "displayName": "Timestamp",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "Name",
-              "displayName": "Name",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "Email",
-              "displayName": "Email",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "Company",
-              "displayName": "Company",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "Phone",
-              "displayName": "Phone",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "Service",
-              "displayName": "Service",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "Budget",
-              "displayName": "Budget",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "Timeline",
-              "displayName": "Timeline",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "Score",
-              "displayName": "Score",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "Status",
-              "displayName": "Status",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            }
-          ]
+          "mappingMode": "autoMapInputData",
+          "value": null
         },
-        "options": {}
+        "options": {
+          "handlingExtraData": "ignoreIt"
+        }
       },
       "id": "google-sheets",
       "name": "Append to Google Sheets",
