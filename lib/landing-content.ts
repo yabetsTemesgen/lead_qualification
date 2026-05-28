@@ -151,6 +151,24 @@ export const testimonials = [
     name: "Mira Patel",
     role: "VP Growth, Elevate Studio",
   },
+  {
+    quote:
+      "From discovery to deployment, every milestone was hit on schedule. The AI assistant they built now handles a meaningful share of our inbound leads.",
+    name: "Daniel Okonkwo",
+    role: "Head of Product, Meridian FinTech",
+  },
+  {
+    quote:
+      "We needed a partner who could move fast without cutting corners. Wipuu Labs shipped a polished mobile app and backend in under eight weeks.",
+    name: "Sofia Lindström",
+    role: "CEO, Harbor Retail",
+  },
+  {
+    quote:
+      "Their automation work eliminated hours of weekly manual reporting. The ROI was obvious within the first month of go-live.",
+    name: "Marcus Webb",
+    role: "Director of Ops, Atlas Manufacturing",
+  },
 ] as const;
 
 export const faqs = [

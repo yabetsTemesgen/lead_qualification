@@ -10,11 +10,11 @@ import { OpenChatButton } from "@/components/chat/open-chat-button";
 import { OpenChatTrigger } from "@/components/chat/open-chat-trigger";
 import { FaqAccordion } from "@/components/landing/faq-accordion";
 import { HeroStats } from "@/components/landing/hero-stats";
+import { TestimonialsCarousel } from "@/components/landing/testimonials-carousel";
 import {
   contact,
   hero,
   site,
-  testimonials,
   whyChooseUs,
 } from "@/lib/landing-content";
 
@@ -144,30 +144,10 @@ export function TestimonialsSection() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <SectionHeading
           eyebrow="Testimonials"
-          title="Trusted by teams that care about speed and polish"
+          title="Trusted by teams that care about Quality"
         />
-        <div className="flex items-center gap-1 text-amber-300" aria-label="5 out of 5 stars">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Star key={i} className="h-4 w-4 fill-current" />
-          ))}
-        </div>
       </div>
-      <div className="mt-10 grid gap-6 lg:grid-cols-3">
-        {testimonials.map((t) => (
-          <figure
-            key={t.name}
-            className="rounded-xl border border-white/10 bg-white/5 p-6"
-          >
-            <blockquote className="text-base leading-8 text-slate-200">
-              &ldquo;{t.quote}&rdquo;
-            </blockquote>
-            <figcaption className="mt-6">
-              <p className="font-semibold text-white">{t.name}</p>
-              <p className="text-sm text-slate-400">{t.role}</p>
-            </figcaption>
-          </figure>
-        ))}
-      </div>
+      <TestimonialsCarousel />
     </section>
   );
 }
@@ -188,8 +168,18 @@ export function FaqSection() {
 
 export function ContactSection() {
   return (
-    <section id="contact" className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-      <div className="grid gap-8 rounded-xl border border-cyan-300/15 bg-linear-to-br from-cyan-400/12 to-slate-900 p-8 lg:grid-cols-[1fr_0.95fr] lg:p-10">
+    <section id="contact" className="mx-auto max-w-7xl px-6 pt-16 pb-24 lg:px-8 lg:pb-28">
+      <div className="relative">
+        <div
+          className="pointer-events-none absolute inset-0 overflow-hidden rounded-xl"
+          aria-hidden
+        >
+          <div className="absolute -left-20 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-white/8 blur-3xl" />
+          <div className="absolute -right-16 top-0 h-64 w-64 rounded-full bg-slate-400/10 blur-3xl" />
+          <div className="absolute inset-0 bg-grid-subtle opacity-20" />
+        </div>
+
+        <div className="glass-contact relative grid gap-8 rounded-xl border border-white/10 p-8 lg:grid-cols-[1fr_0.95fr] lg:items-center lg:p-10">
         <div>
           <p className="text-sm font-semibold tracking-[0.24em] text-gradient-brand uppercase">
             Get started
@@ -211,14 +201,14 @@ export function ContactSection() {
             </a>
           </div>
         </div>
-        <div className="space-y-4">
+        <div className="flex flex-col gap-5 lg:gap-6 lg:py-2">
           {contact.channels.map((channel) => {
             const Icon = channel.label === "Email" ? Mail : Phone;
             return (
               <a
                 key={channel.label}
                 href={channel.href}
-                className="block rounded-xl border border-white/10 bg-slate-950/60 p-6 transition hover:border-cyan-300/30"
+                className="block rounded-xl border border-white/10 bg-white/5 px-6 py-5 backdrop-blur-md transition hover:border-white/20 hover:bg-white/[0.07] lg:py-6"
               >
                 <div className="flex items-start gap-4">
                   <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-cyan-400/15 text-cyan-300 ring-1 ring-cyan-300/25">
@@ -235,14 +225,7 @@ export function ContactSection() {
               </a>
             );
           })}
-          {/* <div className="rounded-xl border border-dashed border-white/15 bg-white/5 p-6 text-center">
-            <MessageSquare className="mx-auto h-6 w-6 text-cyan-400" />
-            <p className="mt-3 text-sm font-medium text-white">AI project assistant</p>
-            <p className="mt-2 text-sm text-slate-400">
-              Use the chat button to share your service needs, budget, timeline, and contact
-              details.
-            </p>
-          </div> */}
+        </div>
         </div>
       </div>
     </section>
