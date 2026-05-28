@@ -78,15 +78,12 @@ export function HeroStats() {
   }, []);
 
   return (
-    <div
-      ref={ref}
-      className="mx-auto max-w-7xl border-y border-white/10 bg-white/3 px-6 py-12 lg:px-8"
-    >
+    <div ref={ref} className="mx-auto w-full max-w-7xl px-6 py-12 lg:px-8">
       <div className="grid gap-6 sm:grid-cols-3">
         {hero.stats.map((stat) => (
           <div
             key={stat.label}
-            className="rounded-3xl border border-white/10 bg-white/5 p-6 text-center sm:text-left"
+            className="rounded-xl border border-white/10 bg-white/5 p-6 text-center sm:text-left"
           >
             <p className="text-4xl font-semibold tracking-tight text-white sm:text-5xl">
               <CountUpValue stat={stat} isVisible={isVisible} />

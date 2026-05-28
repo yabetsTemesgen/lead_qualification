@@ -45,7 +45,7 @@ export function ServiceGraphic({ icon: Icon }: { icon: LucideIcon }) {
         <circle cx="240" cy="140" r="4" fill="#22d3ee" />
         <circle cx="320" cy="100" r="4" fill="#a78bfa" />
       </svg>
-      <div className="absolute bottom-8 left-8 flex h-14 w-14 items-center justify-center rounded-2xl border border-cyan-300/25 bg-cyan-400/10 text-cyan-200 ring-1 ring-cyan-300/15 backdrop-blur-sm">
+      <div className="absolute bottom-8 left-8 flex h-14 w-14 items-center justify-center rounded-lg bg-cyan-400/15 text-cyan-300 ring-1 ring-cyan-300/25 backdrop-blur-sm">
         <Icon className="h-7 w-7" strokeWidth={1.25} />
       </div>
     </div>

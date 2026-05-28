@@ -1,20 +1,17 @@
 import {
   ArrowRight,
-  CheckCircle2,
-  Code2,
-  Layers,
   Mail,
   MessageSquare,
   Phone,
-  Sparkles,
   Star,
 } from "lucide-react";
+import Image from "next/image";
 import { OpenChatButton } from "@/components/chat/open-chat-button";
 import { OpenChatTrigger } from "@/components/chat/open-chat-trigger";
+import { FaqAccordion } from "@/components/landing/faq-accordion";
 import { HeroStats } from "@/components/landing/hero-stats";
 import {
   contact,
-  faqs,
   hero,
   site,
   testimonials,
@@ -34,7 +31,7 @@ function SectionHeading({
 }) {
   return (
     <div className={centered ? "mx-auto max-w-3xl text-center" : "max-w-3xl"}>
-      <p className="text-sm font-semibold tracking-[0.24em] text-cyan-300 uppercase">
+      <p className="text-sm font-semibold tracking-[0.24em] text-gradient-brand uppercase">
         {eyebrow}
       </p>
       <h2 className="mt-3 text-3xl font-semibold text-white sm:text-4xl">{title}</h2>
@@ -45,48 +42,21 @@ function SectionHeading({
   );
 }
 
-const deliverySteps = [
-  {
-    step: "01",
-    title: "Discovery & scope",
-    detail: "Goals, users, constraints, and a clear delivery roadmap.",
-    icon: Layers,
-  },
-  {
-    step: "02",
-    title: "Design & engineering",
-    detail: "Iterative builds with demos, QA, and transparent milestones.",
-    icon: Code2,
-  },
-  {
-    step: "03",
-    title: "Launch & automation",
-    detail: "Production rollout plus workflows that keep your team efficient.",
-    icon: Sparkles,
-  },
-] as const;
-
-const capabilityHighlights = [
-  "Web, mobile, and cloud-native platforms",
-  "AI assistants and intelligent automation",
-  "Design systems and conversion-focused UX",
-] as const;
-
 export function HeroSection() {
   return (
     <>
-      <section className="relative overflow-hidden">
+      <section className="relative flex flex-col overflow-hidden lg:min-h-[calc(100svh-4.5rem)]">
         <div
           className="pointer-events-none absolute inset-0 bg-grid-subtle opacity-[0.35]"
           aria-hidden
         />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,rgba(34,211,238,0.08),transparent_55%)]" aria-hidden />
-        <div className="relative mx-auto grid max-w-7xl gap-16 px-6 py-20 lg:grid-cols-[1.1fr_0.9fr] lg:px-8 lg:py-28">
+        <div
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,rgba(34,211,238,0.08),transparent_55%)]"
+          aria-hidden
+        />
+        <div className="relative mx-auto flex w-full max-w-7xl flex-1 items-center px-6 py-16 lg:px-8 lg:py-12">
+          <div className="grid w-full gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-16">
           <div className="flex flex-col justify-center">
-            <div className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-300">
-              <Sparkles className="h-4 w-4 text-cyan-300" />
-              {hero.eyebrow}
-            </div>
             <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-white sm:text-5xl lg:text-6xl">
               {hero.title}
             </h1>
@@ -94,67 +64,38 @@ export function HeroSection() {
               {hero.description}
             </p>
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <OpenChatTrigger className="inline-flex items-center justify-center gap-2 rounded-full bg-cyan-300 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200">
+              <OpenChatTrigger className="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-brand px-6 py-3 text-sm font-semibold">
                 {hero.primaryCta}
                 <ArrowRight className="h-4 w-4" />
               </OpenChatTrigger>
               <a
                 href="#services"
-                className="inline-flex items-center justify-center rounded-full border border-white/15 px-6 py-3 text-sm font-semibold text-slate-100 transition hover:border-white/30 hover:bg-white/5"
+                className="inline-flex items-center justify-center rounded-lg border border-white/15 px-6 py-3 text-sm font-semibold text-slate-100 transition hover:border-white/30 hover:bg-white/5"
               >
                 {hero.secondaryCta}
               </a>
             </div>
           </div>
 
-        <div className="relative">
-          <div className="absolute inset-0 -translate-x-4 translate-y-4 rounded-4xl bg-cyan-400/10 blur-2xl" />
-          <div className="relative overflow-hidden rounded-4xl border border-white/10 bg-white/8 p-8 shadow-2xl shadow-cyan-950/30 backdrop-blur">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-cyan-300">How we deliver</p>
-                <h2 className="mt-2 text-2xl font-semibold text-white">
-                  Strategy → Build → Scale
-                </h2>
-              </div>
-              <div className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-xs font-medium text-emerald-200">
-                Senior-led
-              </div>
-            </div>
-            <div className="mt-8 space-y-4">
-              {deliverySteps.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <div
-                    key={item.step}
-                    className="flex items-center gap-4 rounded-2xl border border-white/10 bg-slate-950/50 p-4"
-                  >
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-cyan-400/15 text-sm font-semibold text-cyan-200">
-                      {item.step}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="font-medium text-white">{item.title}</p>
-                      <p className="text-sm text-slate-400">{item.detail}</p>
-                    </div>
-                    <Icon className="h-5 w-5 shrink-0 text-cyan-300/80" />
-                  </div>
-                );
-              })}
-            </div>
-            <div className="mt-8 rounded-3xl border border-cyan-300/20 bg-cyan-400/10 p-5">
-              <p className="text-sm font-medium text-cyan-100">What you can expect</p>
-              <ul className="mt-3 space-y-3 text-sm text-slate-200">
-                {capabilityHighlights.map((item) => (
-                  <li key={item} className="flex gap-3">
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-cyan-300" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
+          <div className="relative flex items-center justify-center lg:justify-end">
+            <div
+              className="pointer-events-none absolute inset-0 translate-x-4 translate-y-4 rounded-xl bg-cyan-400/15 blur-3xl"
+              aria-hidden
+            />
+            <div className="relative w-full max-w-lg overflow-hidden rounded-xl border border-white/10 shadow-2xl shadow-cyan-950/40 ring-1 ring-white/10">
+              <Image
+                src="/hero.png"
+                alt="Wipuu Labs team collaborating on software development"
+                width={1024}
+                height={1024}
+                className="h-auto w-full object-cover"
+                priority
+                sizes="(max-width: 1024px) 100vw, 512px"
+              />
             </div>
           </div>
         </div>
-      </div>
+        </div>
       </section>
       <HeroStats />
     </>
@@ -179,9 +120,9 @@ export function WhyChooseUsSection() {
           return (
             <article
               key={item.title}
-              className="rounded-[1.75rem] border border-white/10 bg-white/5 p-6"
+              className="rounded-xl border border-white/10 bg-white/5 p-6"
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-400/12 text-cyan-200 ring-1 ring-cyan-300/20">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-cyan-400/15 text-cyan-300 ring-1 ring-cyan-300/25">
                 <Icon className="h-5 w-5" />
               </div>
               <h3 className="mt-5 text-xl font-semibold text-white">{item.title}</h3>
@@ -215,7 +156,7 @@ export function TestimonialsSection() {
         {testimonials.map((t) => (
           <figure
             key={t.name}
-            className="rounded-[1.75rem] border border-white/10 bg-white/5 p-6"
+            className="rounded-xl border border-white/10 bg-white/5 p-6"
           >
             <blockquote className="text-base leading-8 text-slate-200">
               &ldquo;{t.quote}&rdquo;
@@ -240,19 +181,7 @@ export function FaqSection() {
         description="Everything you need to know before we start."
         centered
       />
-      <div className="mx-auto mt-12 max-w-3xl divide-y divide-white/10 rounded-[1.75rem] border border-white/10 bg-white/5">
-        {faqs.map((faq) => (
-          <details key={faq.question} className="group px-6 py-5">
-            <summary className="cursor-pointer list-none text-base font-medium text-white marker:content-none [&::-webkit-details-marker]:hidden">
-              <span className="flex items-center justify-between gap-4">
-                {faq.question}
-                <span className="text-cyan-300 transition group-open:rotate-45">+</span>
-              </span>
-            </summary>
-            <p className="mt-4 text-sm leading-7 text-slate-300">{faq.answer}</p>
-          </details>
-        ))}
-      </div>
+      <FaqAccordion />
     </section>
   );
 }
@@ -260,9 +189,9 @@ export function FaqSection() {
 export function ContactSection() {
   return (
     <section id="contact" className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-      <div className="grid gap-8 rounded-4xl border border-cyan-300/15 bg-linear-to-br from-cyan-400/12 to-slate-900 p-8 lg:grid-cols-[1fr_0.95fr] lg:p-10">
+      <div className="grid gap-8 rounded-xl border border-cyan-300/15 bg-linear-to-br from-cyan-400/12 to-slate-900 p-8 lg:grid-cols-[1fr_0.95fr] lg:p-10">
         <div>
-          <p className="text-sm font-semibold tracking-[0.24em] text-cyan-300 uppercase">
+          <p className="text-sm font-semibold tracking-[0.24em] text-gradient-brand uppercase">
             Get started
           </p>
           <h2 className="mt-3 text-3xl font-semibold text-white sm:text-4xl">
@@ -275,7 +204,7 @@ export function ContactSection() {
             <OpenChatButton>Start a conversation</OpenChatButton>
             <a
               href={`mailto:${site.email}`}
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/15 px-6 py-3 text-sm font-semibold text-slate-100 transition hover:border-white/30 hover:bg-white/5"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/15 px-6 py-3 text-sm font-semibold text-slate-100 transition hover:border-white/30 hover:bg-white/5"
             >
               {site.email}
               <ArrowRight className="h-4 w-4" />
@@ -289,14 +218,16 @@ export function ContactSection() {
               <a
                 key={channel.label}
                 href={channel.href}
-                className="block rounded-[1.75rem] border border-white/10 bg-slate-950/60 p-6 transition hover:border-cyan-300/30"
+                className="block rounded-xl border border-white/10 bg-slate-950/60 p-6 transition hover:border-cyan-300/30"
               >
                 <div className="flex items-start gap-4">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-400/12 text-cyan-200">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-cyan-400/15 text-cyan-300 ring-1 ring-cyan-300/25">
                     <Icon className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-cyan-100">{channel.label}</p>
+                    <p className="text-sm font-medium text-gradient-brand">
+                      {channel.label}
+                    </p>
                     <p className="mt-1 text-lg font-semibold text-white">{channel.value}</p>
                     <p className="mt-1 text-sm text-slate-400">{channel.note}</p>
                   </div>
@@ -304,14 +235,14 @@ export function ContactSection() {
               </a>
             );
           })}
-          <div className="rounded-[1.75rem] border border-dashed border-white/15 bg-white/5 p-6 text-center">
-            <MessageSquare className="mx-auto h-6 w-6 text-cyan-300" />
+          {/* <div className="rounded-xl border border-dashed border-white/15 bg-white/5 p-6 text-center">
+            <MessageSquare className="mx-auto h-6 w-6 text-cyan-400" />
             <p className="mt-3 text-sm font-medium text-white">AI project assistant</p>
             <p className="mt-2 text-sm text-slate-400">
               Use the chat button to share your service needs, budget, timeline, and contact
               details.
             </p>
-          </div>
+          </div> */}
         </div>
       </div>
     </section>

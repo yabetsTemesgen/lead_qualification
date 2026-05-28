@@ -38,6 +38,70 @@ a {
   color: #f8fafc;
 }
 
+/* Cyan / blue gradients only — same brand color family as bg-cyan-300 & text-cyan-300 */
+@layer utilities {
+  .text-gradient-brand {
+    color: #67e8f9;
+    background-image: linear-gradient(
+      90deg,
+      #a5f3fc 0%,
+      #67e8f9 35%,
+      #22d3ee 65%,
+      #38bdf8 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .bg-gradient-brand {
+    background-color: #67e8f9;
+    background-image: linear-gradient(
+      90deg,
+      #a5f3fc 0%,
+      #67e8f9 30%,
+      #22d3ee 65%,
+      #06b6d4 100%
+    );
+    color: #020617;
+    transition: background-image 0.25s ease;
+  }
+
+  .bg-gradient-brand:hover {
+    background-image: linear-gradient(
+      270deg,
+      #a5f3fc 0%,
+      #67e8f9 30%,
+      #22d3ee 65%,
+      #06b6d4 100%
+    );
+  }
+
+  .bg-gradient-brand-outline {
+    background-color: rgba(34, 211, 238, 0.12);
+    background-image: linear-gradient(
+      135deg,
+      rgba(165, 243, 252, 0.22) 0%,
+      rgba(103, 232, 249, 0.16) 50%,
+      rgba(34, 211, 238, 0.14) 100%
+    );
+    border: 1px solid rgba(103, 232, 249, 0.45);
+    transition:
+      background-image 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .bg-gradient-brand-outline:hover {
+    background-image: linear-gradient(
+      135deg,
+      rgba(165, 243, 252, 0.32) 0%,
+      rgba(103, 232, 249, 0.24) 50%,
+      rgba(34, 211, 238, 0.2) 100%
+    );
+    border-color: rgba(165, 243, 252, 0.65);
+  }
+}
+
 .bg-grid-subtle {
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
@@ -55,4 +119,115 @@ a {
 .bg-grid-isometric {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cg fill='none' stroke='rgba(255,255,255,0.08)' stroke-width='1'%3E%3Cpath d='M28 0 L56 16 L56 48 L28 64 L0 48 L0 16 Z'/%3E%3Cpath d='M28 32 L56 48 L56 80 L28 96 L0 80 L0 48 Z'/%3E%3C/g%3E%3C/svg%3E");
   background-size: 56px 100px;
+}
+
+@keyframes service-card-glare-sweep {
+  0%,
+  72% {
+    transform: translateX(-130%) skewX(-10deg);
+    opacity: 0;
+  }
+  80% {
+    opacity: 0.35;
+  }
+  90% {
+    transform: translateX(210%) skewX(-10deg);
+    opacity: 0.3;
+  }
+  96%,
+  100% {
+    transform: translateX(210%) skewX(-10deg);
+    opacity: 0;
+  }
+}
+
+@keyframes service-card-edge-pulse {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.service-card-idle {
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.05),
+    inset 0 0 40px rgba(34, 211, 238, 0.025);
+}
+
+.service-card-idle::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(34, 211, 238, 0.03) 0%,
+    transparent 32%,
+    transparent 68%,
+    rgba(56, 189, 248, 0.02) 100%
+  );
+  animation: service-card-edge-pulse 10s ease-in-out infinite;
+}
+
+.service-card-idle::after {
+  content: "";
+  position: absolute;
+  top: -15%;
+  bottom: -15%;
+  left: 0;
+  width: 32%;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(165, 243, 252, 0.02) 35%,
+    rgba(103, 232, 249, 0.07) 50%,
+    rgba(34, 211, 238, 0.03) 65%,
+    transparent 100%
+  );
+  filter: blur(2px);
+  animation: service-card-glare-sweep 11s ease-in-out infinite;
+}
+
+.service-card-active {
+  transition:
+    background-color 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.service-card-layer {
+  transition:
+    opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.service-card-layer--enter {
+  transition-delay: 0.08s;
+}
+
+.service-card-graphic {
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: 0.12s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .service-card-idle::before,
+  .service-card-idle::after {
+    animation: none;
+  }
+
+  .service-card-layer,
+  .service-card-graphic,
+  .service-card-active {
+    transition-duration: 0.01ms;
+    transition-delay: 0ms;
+  }
 }

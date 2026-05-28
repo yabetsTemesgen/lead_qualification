@@ -409,7 +409,7 @@ export function LeadChatWidget() {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-controls="lead-chat-panel"
-        className="fixed right-5 bottom-5 z-50 inline-flex items-center gap-3 rounded-full border border-cyan-300/30 bg-cyan-300 px-5 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-900/40 transition hover:bg-cyan-200"
+        className="fixed right-5 bottom-5 z-50 inline-flex items-center gap-3 rounded-lg bg-gradient-brand px-5 py-3 text-sm font-semibold"
       >
         <MessageSquare className="h-4 w-4" />
         <span className="hidden sm:inline">Chat with us</span>
@@ -420,7 +420,7 @@ export function LeadChatWidget() {
           id="lead-chat-panel"
           role="dialog"
           aria-label="Project assistant chat"
-          className="fixed right-5 bottom-20 z-50 flex h-[min(560px,calc(100vh-6rem))] w-[min(100vw-2.5rem,400px)] flex-col overflow-hidden rounded-2xl border border-white/15 bg-slate-950 shadow-2xl shadow-black/50"
+          className="fixed right-5 bottom-20 z-50 flex h-[min(560px,calc(100vh-6rem))] w-[min(100vw-2.5rem,400px)] flex-col overflow-hidden rounded-lg border border-white/15 bg-slate-950 shadow-2xl shadow-black/50"
         >
           <header className="flex items-center justify-between border-b border-white/10 bg-slate-900/80 px-4 py-3">
             <div className="flex items-center gap-2">
@@ -451,9 +451,9 @@ export function LeadChatWidget() {
                 className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-[88%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
+                  className={`max-w-[88%] rounded-lg px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
                     msg.role === "user"
-                      ? "bg-cyan-400/20 text-cyan-50"
+                      ? "bg-gradient-to-r from-cyan-500/25 via-sky-500/20 to-cyan-400/20 text-cyan-50"
                       : "bg-white/5 text-slate-200"
                   }`}
                 >
@@ -464,7 +464,7 @@ export function LeadChatWidget() {
 
             {isTyping ? (
               <div className="flex justify-start">
-                <div className="inline-flex items-center gap-2 rounded-2xl bg-white/5 px-3.5 py-2.5 text-sm text-slate-400">
+                <div className="inline-flex items-center gap-2 rounded-lg bg-white/5 px-3.5 py-2.5 text-sm text-slate-400">
                   <Loader2 className="h-4 w-4 animate-spin" />
                   Typing…
                 </div>
@@ -480,7 +480,7 @@ export function LeadChatWidget() {
                 You already submitted an inquiry.{" "}
                 <button
                   type="button"
-                  className="text-cyan-300 underline"
+                  className="text-gradient-brand underline"
                   onClick={resetChat}
                 >
                   Start over
@@ -500,7 +500,7 @@ export function LeadChatWidget() {
                       type="button"
                       onClick={() => void sendMessage("yes")}
                       disabled={isTyping}
-                      className="flex-1 rounded-xl border border-cyan-300/40 bg-cyan-400/15 py-2 text-sm font-medium text-cyan-100 transition hover:bg-cyan-400/25 disabled:opacity-50"
+                      className="flex-1 rounded-md bg-gradient-brand-outline py-2 text-sm font-medium text-gradient-brand disabled:opacity-50"
                     >
                       Yes, share details
                     </button>
@@ -508,7 +508,7 @@ export function LeadChatWidget() {
                       type="button"
                       onClick={() => void sendMessage("no")}
                       disabled={isTyping}
-                      className="flex-1 rounded-xl border border-white/15 bg-white/5 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10 disabled:opacity-50"
+                      className="flex-1 rounded-md border border-white/15 bg-white/5 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10 disabled:opacity-50"
                     >
                       Not yet
                     </button>
@@ -526,15 +526,15 @@ export function LeadChatWidget() {
                     placeholder={
                       awaitingContactConsent
                         ? "Reply yes or no…"
-                        : "Ask about our services or describe your project…"
+                        : "Enter Your Message…"
                     }
-                    className="min-h-[44px] flex-1 resize-none rounded-xl border border-white/15 bg-slate-950/80 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-cyan-300/50 focus:outline-none disabled:opacity-60"
+                    className="min-h-[44px] flex-1 resize-none rounded-md border border-white/15 bg-slate-950/80 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-cyan-300/50 focus:outline-none disabled:opacity-60"
                   />
                   <button
                     type="button"
                     onClick={() => void sendMessage()}
                     disabled={!input.trim() || isTyping}
-                    className="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-xl bg-cyan-300 text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-40"
+                    className="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-md bg-gradient-brand disabled:cursor-not-allowed disabled:opacity-40"
                     aria-label="Send message"
                   >
                     <Send className="h-4 w-4" />
@@ -578,7 +578,7 @@ export function LeadChatWidget() {
                       }
                     }}
                     aria-invalid={Boolean(contactErrors.fullName)}
-                    className="w-full rounded-xl border border-white/15 bg-slate-950/80 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-cyan-300/50 focus:outline-none aria-invalid:border-rose-400/60"
+                    className="w-full rounded-md border border-white/15 bg-slate-950/80 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-cyan-300/50 focus:outline-none aria-invalid:border-rose-400/60"
                   />
                   {contactErrors.fullName ? (
                     <p className="mt-1 text-xs text-rose-300">{contactErrors.fullName}</p>
@@ -602,7 +602,7 @@ export function LeadChatWidget() {
                       }
                     }}
                     aria-invalid={Boolean(contactErrors.email)}
-                    className="w-full rounded-xl border border-white/15 bg-slate-950/80 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-cyan-300/50 focus:outline-none aria-invalid:border-rose-400/60"
+                    className="w-full rounded-md border border-white/15 bg-slate-950/80 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-cyan-300/50 focus:outline-none aria-invalid:border-rose-400/60"
                   />
                   {contactErrors.email ? (
                     <p className="mt-1 text-xs text-rose-300">{contactErrors.email}</p>
@@ -628,7 +628,7 @@ export function LeadChatWidget() {
                       }
                     }}
                     aria-invalid={Boolean(contactErrors.companyName)}
-                    className="w-full rounded-xl border border-white/15 bg-slate-950/80 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-cyan-300/50 focus:outline-none aria-invalid:border-rose-400/60"
+                    className="w-full rounded-md border border-white/15 bg-slate-950/80 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-cyan-300/50 focus:outline-none aria-invalid:border-rose-400/60"
                   />
                   {contactErrors.companyName ? (
                     <p className="mt-1 text-xs text-rose-300">
@@ -653,7 +653,7 @@ export function LeadChatWidget() {
                         setContactErrors((err) => ({ ...err, phone: undefined }));
                       }
                     }}
-                    className="w-full rounded-xl border border-white/15 bg-slate-950/80 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-cyan-300/50 focus:outline-none"
+                    className="w-full rounded-md border border-white/15 bg-slate-950/80 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-cyan-300/50 focus:outline-none"
                   />
                 </div>
 
@@ -661,7 +661,7 @@ export function LeadChatWidget() {
 
                 <button
                   type="submit"
-                  className="flex w-full items-center justify-center gap-2 rounded-full bg-cyan-300 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200"
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-brand py-2.5 text-sm font-semibold"
                 >
                   Submit inquiry
                   <Send className="h-4 w-4" />
@@ -694,7 +694,7 @@ export function LeadChatWidget() {
                   resetChat();
                   setOpen(false);
                 }}
-                className="w-full rounded-full border border-white/15 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-white/5"
+                className="w-full rounded-lg border border-white/15 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-white/5"
               >
                 Close
               </button>

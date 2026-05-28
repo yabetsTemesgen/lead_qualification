@@ -16,8 +16,8 @@ export function OpenChatButton({
 }: OpenChatButtonProps) {
   const base =
     variant === "primary"
-      ? "inline-flex items-center justify-center gap-2 rounded-full bg-cyan-300 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200"
-      : "inline-flex items-center justify-center gap-2 rounded-full border border-cyan-300/40 px-6 py-2.5 text-sm font-medium text-cyan-100 transition hover:border-cyan-200/60 hover:bg-cyan-400/10";
+      ? "inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-brand px-6 py-3 text-sm font-semibold"
+      : "inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-brand-outline px-6 py-2.5 text-sm font-medium text-gradient-brand";
 
   return (
     <button type="button" onClick={openLeadChat} className={`${base} ${className}`}>
