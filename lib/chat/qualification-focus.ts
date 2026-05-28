@@ -26,7 +26,7 @@ export function getQualificationFocus(
   if (contactConsent === "granted") {
     return [
       "The visitor agreed to share contact details.",
-      "Tell them to fill in the contact form below (name, email, company).",
+      "The app shows the contact form — do not send another message about filling it in.",
       "Do not ask them to type contact fields in chat.",
     ].join(" ");
   }
@@ -42,43 +42,33 @@ export function getQualificationFocus(
 
   if (!n.budget) {
     return [
-      `Service confirmed: ${n.service}.`,
-      "Your ONLY job this turn: ask which budget range fits.",
-      `Present these exact options in your message: ${BUDGET_OPTIONS.join(", ")}.`,
-      "Do NOT ask about platforms (iOS/Android), audience, features, or product depth.",
+      `They chose ${n.service}.`,
+      "Respond naturally: briefly reflect why that service fits or acknowledge their choice, then ask about budget.",
+      `You MUST list every budget option in your message: ${BUDGET_OPTIONS.join(", ")}.`,
+      "Sound like a consultant, not a script.",
     ].join(" ");
   }
 
   if (!n.timeline) {
     return [
       `Service: ${n.service}. Budget: ${n.budget}.`,
-      "Your ONLY job this turn: ask when they need the project completed.",
-      `Present these exact options: ${TIMELINE_OPTIONS.join(", ")}.`,
-      "Do NOT ask further product-discovery questions.",
-    ].join(" ");
-  }
-
-  if (!n.projectSummary) {
-    return [
-      `Service: ${n.service}. Budget: ${n.budget}. Timeline: ${n.timeline}.`,
-      "Ask ONE short question about other requirements (platforms, must-haves, or integrations) — one sentence only.",
-      "Do NOT ask for name, email, phone, or company in chat.",
-      "Do NOT mention the contact form yet.",
+      "Acknowledge the budget naturally, then ask about timeline.",
+      `You MUST list every timeline option in your message: ${TIMELINE_OPTIONS.join(", ")}.`,
+      "Sound like a consultant, not a script.",
     ].join(" ");
   }
 
   if (isQualificationComplete(n) && contactConsent === "none") {
     return [
-      "Qualification is complete.",
-      "Briefly confirm service, budget, timeline, and requirements.",
-      "Ask if they are ready to share contact details now — they should reply yes or no.",
-      "Do NOT mention the contact form until they say yes.",
+      `Service: ${n.service}. Budget: ${n.budget}. Timeline: ${n.timeline}.`,
+      "Qualification is complete. In your own words, briefly recap what you understood, then ask if they want to share contact details now (yes or no).",
+      "Do NOT mention a contact form. Do NOT ask more qualifying questions.",
     ].join(" ");
   }
 
   return [
     "Qualification is complete. Do NOT ask for name, email, or company in chat.",
-    "If they have questions, answer them. If they say yes to contact details, tell them to use the form below.",
+    "Answer project questions only. If they say yes to sharing contact details, stay silent — the app opens the form.",
   ].join(" ");
 }
 

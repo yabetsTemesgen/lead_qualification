@@ -1,9 +1,9 @@
+/** Must match service names on the landing page (lib/landing-content.ts). */
 export const SERVICE_OPTIONS = [
-  "Web Development",
-  "Mobile App",
-  "AI/ML Solution",
-  "Cloud Migration",
+  "AI Product Development",
+  "Product Strategy Consulting",
   "UI/UX Design",
+  "App & Software Development",
 ] as const;
 
 export const BUDGET_OPTIONS = [

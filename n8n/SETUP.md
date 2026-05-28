@@ -18,9 +18,9 @@ You need:
 
 1. Create a new spreadsheet (or use an existing one).
 2. Rename the first tab to **`Leads`**.
-3. Enter these headers in **row 1**, columns A–I:
+3. Enter these headers in **row 1**, columns A–J:
 
-   `Timestamp` · `Name` · `Email` · `Phone` · `Service` · `Budget` · `Timeline` · `Score` · `Status`
+   `Timestamp` · `Name` · `Email` · `Company` · `Phone` · `Service` · `Budget` · `Timeline` · `Score` · `Status`
 
 4. Copy the **spreadsheet ID** from the URL:  
    `https://docs.google.com/spreadsheets/d/`**`THIS_PART`**`/edit`
@@ -102,7 +102,7 @@ This node writes the internal sales brief (email body).
   "email": "test@example.com",
   "company": "Acme Inc",
   "phone": "5551234567",
-  "service": "Web Development",
+  "service": "App & Software Development",
   "budget": "$10K-$25K",
   "timeline": "1-2 months",
   "score": "Medium",

@@ -3,16 +3,13 @@ import { z } from "zod";
 import type { ContactConsentStatus } from "@/lib/chat/contact-consent";
 import { isQualificationComplete } from "@/lib/chat/conversation-ready";
 import {
-  CONTACT_FORM_TRANSITION_MESSAGE,
-  messageAsksForContactInChat,
-} from "@/lib/chat/contact-form";
-import {
   inferQualificationFromText,
   isLeadReadyForSubmit,
   normalizeLeadDraft,
 } from "@/lib/chat/normalize";
 import { parseChatResponse } from "@/lib/chat/parse-chat-response";
 import { getQualificationFocus } from "@/lib/chat/qualification-focus";
+import { polishQualificationReply } from "@/lib/chat/qualification-prompts";
 import { buildChatSystemPrompt } from "@/lib/chat/system-prompt";
 import { stripModelArtifacts } from "@/lib/chat/strip-model-output";
 import type { LeadDraft } from "@/lib/chat/types";
@@ -59,7 +56,7 @@ async function callChatModel(messages: OpenAIMessage[]): Promise<string> {
 
   const body = {
     model,
-    temperature: 0.75,
+    temperature: 0.85,
     max_tokens: 900,
     messages,
   };
@@ -137,10 +134,16 @@ export async function POST(request: Request) {
 
     const contactConsent: ContactConsentStatus =
       parsed.data.contactConsent ?? "none";
-    const focus = getQualificationFocus(
-      parsed.data.leadDraft,
-      contactConsent,
-    );
+
+    let draft = mergeLeadDraft(parsed.data.leadDraft, undefined);
+    const lastUser = [...parsed.data.messages]
+      .reverse()
+      .find((m) => m.role === "user");
+    if (lastUser) {
+      draft = inferQualificationFromText(lastUser.content, draft);
+    }
+
+    const focus = getQualificationFocus(draft, contactConsent);
     const systemPrompt = buildChatSystemPrompt(focus);
     const modelMessages: OpenAIMessage[] = [
       { role: "system", content: systemPrompt },
@@ -172,11 +175,7 @@ export async function POST(request: Request) {
         }
       : undefined;
 
-    let draft = mergeLeadDraft(parsed.data.leadDraft, extractedLead);
-
-    const lastUser = [...parsed.data.messages]
-      .reverse()
-      .find((m) => m.role === "user");
+    draft = mergeLeadDraft(draft, extractedLead);
     if (lastUser) {
       draft = inferQualificationFromText(lastUser.content, draft);
     }
@@ -195,14 +194,7 @@ export async function POST(request: Request) {
 
     const canSubmit = isLeadReadyForSubmit(normalized);
 
-    let reply = message;
-    if (showContactForm) {
-      if (messageAsksForContactInChat(message)) {
-        reply = CONTACT_FORM_TRANSITION_MESSAGE;
-      } else if (!/contact form below/i.test(message)) {
-        reply = `${message}\n\n${CONTACT_FORM_TRANSITION_MESSAGE}`;
-      }
-    }
+    const reply = polishQualificationReply(message, draft, contactConsent);
 
     return NextResponse.json({
       message: reply,

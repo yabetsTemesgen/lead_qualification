@@ -13,11 +13,7 @@ import {
   type ContactConsentStatus,
 } from "@/lib/chat/contact-consent";
 import { isQualificationComplete } from "@/lib/chat/conversation-ready";
-import {
-  CONTACT_FORM_TRANSITION_MESSAGE,
-  contactFormSchema,
-} from "@/lib/chat/contact-form";
-import { getMissingQualificationLabels } from "@/lib/chat/qualification-focus";
+import { contactFormSchema } from "@/lib/chat/contact-form";
 import { INITIAL_ASSISTANT_MESSAGE } from "@/lib/chat/system-prompt";
 import {
   inferQualificationFromMessages,
@@ -32,7 +28,6 @@ import type {
   ChatTurn,
   ChatUiStep,
   LeadDraft,
-  LeadScore,
 } from "@/lib/chat/types";
 import { site } from "@/lib/landing-content";
 
@@ -41,13 +36,6 @@ const OPEN_CHAT_EVENT = "open-lead-chat";
 function createMessage(role: ChatMessage["role"], text: string): ChatMessage {
   return { id: crypto.randomUUID(), role, text };
 }
-
-function scoreBadgeClass(score: LeadScore) {
-  if (score === "High") return "bg-emerald-400/15 text-emerald-200 ring-emerald-400/30";
-  if (score === "Medium") return "bg-amber-400/15 text-amber-200 ring-amber-400/30";
-  return "bg-slate-400/15 text-slate-300 ring-white/20";
-}
-
 
 export function LeadChatWidget() {
   const formId = useId();
@@ -61,7 +49,6 @@ export function LeadChatWidget() {
   const [input, setInput] = useState("");
   const [leadDraft, setLeadDraft] = useState<LeadDraft>({});
   const [isTyping, setIsTyping] = useState(false);
-  const [score, setScore] = useState<LeadScore | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [alreadySubmitted, setAlreadySubmitted] = useState(false);
   const [contact, setContact] = useState({
@@ -106,10 +93,11 @@ export function LeadChatWidget() {
     }));
 
   const resetChat = () => {
+    localStorage.removeItem(SUBMITTED_STORAGE_KEY);
+    setAlreadySubmitted(false);
     setStep("chatting");
     setContactConsent("none");
     setLeadDraft({});
-    setScore(null);
     setError(null);
     setInput("");
     setContact({ fullName: "", email: "", companyName: "", phone: "" });
@@ -131,24 +119,11 @@ export function LeadChatWidget() {
     });
   };
 
-  const openContactForm = useCallback((assistantNote?: string) => {
-    setStep("contact");
-    setError(null);
-    if (assistantNote) {
-      setMessages((prev) => {
-        const last = prev[prev.length - 1];
-        if (last?.role === "assistant" && last.text === assistantNote) {
-          return prev;
-        }
-        return [...prev, createMessage("assistant", assistantNote)];
-      });
-    }
-  }, []);
-
   const grantContactConsent = useCallback(() => {
     setContactConsent("granted");
-    openContactForm(CONTACT_FORM_TRANSITION_MESSAGE);
-  }, [openContactForm]);
+    setStep("contact");
+    setError(null);
+  }, []);
 
   const promptContactConsent = useCallback((priorAssistantText?: string) => {
     setContactConsent("pending");
@@ -273,28 +248,31 @@ export function LeadChatWidget() {
         data.askContactConsent === true ||
         (contactConsent === "none" && isQualificationComplete(merged));
 
-      if (data.message) {
-        setMessages((prev) => [
-          ...prev,
-          createMessage("assistant", data.message!),
-        ]);
-        if (messageAsksContactConsent(data.message)) {
-          setContactConsent("pending");
-        }
-      }
-
-      if (
+      const apiAsksConsent =
+        Boolean(data.message && messageAsksContactConsent(data.message));
+      const openFormFromApi =
         consentDecision === "yes" &&
         (data.showContactForm === true ||
-          (data.message && messageDirectsToContactForm(data.message)))
-      ) {
-        setContactConsent("granted");
-        setStep("contact");
-        setError(null);
-      } else if (data.showContactForm === true && contactConsent === "granted") {
+          Boolean(data.message && messageDirectsToContactForm(data.message)));
+
+      if (openFormFromApi) {
         grantContactConsent();
+      } else if (data.message?.trim()) {
+        if (shouldAskConsent && contactConsent === "none" && !apiAsksConsent) {
+          promptContactConsent();
+        } else {
+          setMessages((prev) => [
+            ...prev,
+            createMessage("assistant", data.message!),
+          ]);
+          if (apiAsksConsent) {
+            setContactConsent("pending");
+          }
+        }
       } else if (shouldAskConsent && contactConsent === "none") {
         promptContactConsent();
+      } else if (data.showContactForm === true && contactConsent === "granted") {
+        grantContactConsent();
       }
     } catch {
       setError("Network error. Please check your connection.");
@@ -382,7 +360,6 @@ export function LeadChatWidget() {
 
       const data = (await res.json()) as {
         ok?: boolean;
-        score?: LeadScore;
         error?: string;
       };
 
@@ -392,13 +369,11 @@ export function LeadChatWidget() {
         return;
       }
 
-      const finalScore = data.score ?? "Medium";
-      setScore(finalScore);
       setMessages((prev) => [
         ...prev,
         createMessage(
           "assistant",
-          `Thank you, ${normalized.fullName}! Your inquiry is in our queue (${finalScore} priority). We'll follow up within one business day at ${normalized.email}.`,
+          `Thank you, ${normalized.fullName}! We've received your inquiry and will follow up within one business day at ${normalized.email}.`,
         ),
       ]);
       setStep("success");
@@ -415,7 +390,6 @@ export function LeadChatWidget() {
     }
   };
 
-  const missingQualification = getMissingQualificationLabels(leadDraft);
   const normalized = normalizeLeadDraft(leadDraft);
   const lastAssistantMessage = [...messages]
     .reverse()
@@ -497,14 +471,6 @@ export function LeadChatWidget() {
               </div>
             ) : null}
 
-            {step === "success" && score ? (
-              <div
-                className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ring-1 ${scoreBadgeClass(score)}`}
-              >
-                {score} priority lead
-              </div>
-            ) : null}
-
             <div ref={messagesEndRef} />
           </div>
 
@@ -524,12 +490,6 @@ export function LeadChatWidget() {
 
             {step === "chatting" && !alreadySubmitted ? (
               <>
-                {missingQualification.length > 0 && messages.length > 1 ? (
-                  <p className="mb-2 text-xs text-slate-500">
-                    Next: {missingQualification.join(" → ")}
-                  </p>
-                ) : null}
-
                 {error ? (
                   <p className="mb-2 text-sm text-rose-300">{error}</p>
                 ) : null}

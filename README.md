@@ -41,8 +41,8 @@ Open [http://localhost:3000](http://localhost:3000).
 2. Follow **`n8n/SETUP.md`** — **OpenAI** node (Text → Message a Model); OpenAI or MiniMax credential + matching model ID.
 3. Configure **Google Sheets** (OAuth)
 4. Create a Google Sheet tab **Leads** with row 1:  
-   `Timestamp`, `Name`, `Email`, `Phone`, `Service`, `Budget`, `Timeline`, `Score`, `Status`  
-   (Phone is optional on the form — empty in the sheet when omitted. Company is in the **email**.)
+   `Timestamp`, `Name`, `Email`, `Company`, `Phone`, `Service`, `Budget`, `Timeline`, `Score`, `Status`  
+   (Phone is optional on the form — empty in the sheet when omitted.)
 5. Replace placeholder Sheet ID and credential IDs in the workflow nodes.
 6. Configure **Email Lead Summary** (Gmail) with your admin address and Gmail OAuth.
 7. Activate the workflow and copy the **Production** webhook URL into `N8N_WEBHOOK_URL`.

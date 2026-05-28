@@ -25,6 +25,13 @@ function pickClosest<T extends string>(
   return null;
 }
 
+const LEGACY_SERVICE_ALIASES: Record<string, ServiceOption> = {
+  "Web Development": "App & Software Development",
+  "Mobile App": "App & Software Development",
+  "AI/ML Solution": "AI Product Development",
+  "Cloud Migration": "App & Software Development",
+};
+
 export function normalizeService(value?: string | null): ServiceOption | null {
   if (!value?.trim()) return null;
   const v = value.trim();
@@ -32,40 +39,57 @@ export function normalizeService(value?: string | null): ServiceOption | null {
   const direct = pickClosest(v, SERVICE_OPTIONS);
   if (direct) return direct;
 
+  if (LEGACY_SERVICE_ALIASES[v]) return LEGACY_SERVICE_ALIASES[v];
+
   const lower = v.toLowerCase();
 
-  // Landing-page "App & Software Development" (check before /\bai\b/ — not substring "ai" in "app")
+  // App & Software Development (before /\bai\b/ — "app" in "application" is ok, not "ai" in "app")
   if (
     /app\s*(?:&|and)\s*software|app\s+and\s+software|software development/.test(
       lower,
-    )
+    ) ||
+    /mobile\s*app|native\s*app|ios|android|app store/.test(lower) ||
+    /\bweb\s*app\b|website|saas|portal|dashboard|next\.?js|react\b/.test(lower)
   ) {
-    return /mobile|ios|android|native app/.test(lower)
-      ? "Mobile App"
-      : "Web Development";
-  }
-
-  if (/mobile\s*app|native\s*app|ios|android|app store/.test(lower)) {
-    return "Mobile App";
+    return "App & Software Development";
   }
 
   if (
-    /\bai\b|\bml\b|ai\/ml|ai product|machine learning|\bllm\b|chatbot/.test(
+    /\bai\b|\bml\b|ai\/ml|ai product|machine learning|\bllm\b|chatbot|artificial intelligence/.test(
       lower,
     )
   ) {
-    return "AI/ML Solution";
+    return "AI Product Development";
+  }
+
+  if (
+    /product strategy|strategy consulting|roadmap|prioriti[sz]e|discovery workshop|validate ideas/.test(
+      lower,
+    )
+  ) {
+    return "Product Strategy Consulting";
+  }
+
+  if (
+    /\bui\b|\bux\b|ui\/ux|user interface|user experience|\bfigma\b/i.test(lower)
+  ) {
+    return "UI/UX Design";
   }
 
   if (/cloud|aws|azure|gcp|migration|devops/.test(lower)) {
-    return "Cloud Migration";
-  }
-  if (/ui|ux|design|figma/.test(lower)) return "UI/UX Design";
-  if (/web|website|saas|portal|dashboard|next\.?js|react/.test(lower)) {
-    return "Web Development";
+    return "App & Software Development";
   }
 
   return null;
+}
+
+function budgetFromRange(lowK: number, highK: number): BudgetOption {
+  const hi = Math.max(lowK, highK);
+  const lo = Math.min(lowK, highK);
+  if (hi <= 10) return "<$10K";
+  if (hi <= 25 && lo < 25) return "$10K-$25K";
+  if (hi <= 50 && lo < 50) return "$25K-$50K";
+  return "$50K+";
 }
 
 export function normalizeBudget(value?: string | null): BudgetOption | null {
@@ -75,26 +99,44 @@ export function normalizeBudget(value?: string | null): BudgetOption | null {
   if (direct) return direct;
 
   const lower = v.toLowerCase().replace(/,/g, "");
-  if (/under\s*10|<\s*\$?\s*10|<10/.test(lower)) return "<$10K";
-  if (/50\s*k|50k|\$50|50,000|50-100|above\s*50/.test(lower)) return "$50K+";
+
+  // Two-number ranges first — "10k-25k" contains "25k" and must not match $25K-$50K
+  const rangeMatch = lower.match(
+    /(\d+)\s*k?\s*(?:-|–|—|\bto\b|\band\b)\s*(\d+)\s*k?/i,
+  );
+  if (rangeMatch) {
+    return budgetFromRange(Number(rangeMatch[1]), Number(rangeMatch[2]));
+  }
+
+  if (/under\s*10|<\s*\$?\s*10|<\s*10\s*k\b/.test(lower)) return "<$10K";
+  if (/50\s*k|50k|\$50|50,000|50-100|above\s*50|\b50\s*\+/.test(lower)) {
+    return "$50K+";
+  }
+  if (/25\s*-\s*50|25\s*to\s*50|between\s*25\s*and\s*50/.test(lower)) {
+    return "$25K-$50K";
+  }
   if (
-    /25\s*k|25k|25-50|25\s*to\s*50|between\s*25|25\s*and\s*5o?k|25\s*-\s*50/i.test(
+    /10\s*-\s*25|10\s*to\s*25|between\s*10\s*and\s*25|10k\s*-\s*25k/.test(
       lower,
     )
   ) {
-    return "$25K-$50K";
+    return "$10K-$25K";
   }
-  if (/10\s*k|10k|10-25|15k|20k|10\s*to\s*25/.test(lower)) return "$10K-$25K";
-  if (/^20\s*k?$|^\$?\s*20k$/i.test(lower.trim())) return "$10K-$25K";
 
   const nums = [...lower.matchAll(/(\d+)\s*k/gi)].map((m) => Number(m[1]));
-  if (nums.length) {
-    const max = Math.max(...nums);
-    if (max < 10) return "<$10K";
-    if (max < 25) return "$10K-$25K";
-    if (max < 50) return "$25K-$50K";
+  if (nums.length === 1) {
+    const n = nums[0];
+    if (n < 10) return "<$10K";
+    if (n <= 25) return "$10K-$25K";
+    if (n <= 50) return "$25K-$50K";
     return "$50K+";
   }
+  if (nums.length >= 2) {
+    return budgetFromRange(Math.min(...nums), Math.max(...nums));
+  }
+
+  if (/^20\s*k?$|^\$?\s*20k$|2ok/i.test(lower.trim())) return "$10K-$25K";
+  if (/^15\s*k?$|15k/i.test(lower)) return "$10K-$25K";
 
   return null;
 }
@@ -167,13 +209,14 @@ export function inferQualificationFromText(
   };
 }
 
-/** Fill qualification fields from full chat history (model often confirms slots in replies). */
+/** Fill qualification fields from user messages only (not assistant copy). */
 export function inferQualificationFromMessages(
   turns: { role: string; content: string }[],
   draft: LeadDraft,
 ): LeadDraft {
   let merged = draft;
   for (const turn of turns) {
+    if (turn.role !== "user") continue;
     merged = inferQualificationFromText(turn.content, merged);
   }
   return merged;
