@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { hero } from "@/lib/landing-content";
+import { ScrollReveal } from "@/components/landing/scroll-reveal";
 
 type HeroStat = (typeof hero.stats)[number];
 
@@ -78,18 +79,27 @@ export function HeroStats() {
   }, []);
 
   return (
-    <div ref={ref} className="mx-auto w-full max-w-7xl px-6 py-12 lg:px-8">
-      <div className="grid gap-6 sm:grid-cols-3">
-        {hero.stats.map((stat) => (
-          <div
+    <div className="mx-auto w-full max-w-7xl px-6 py-12 lg:px-8">
+      <div ref={ref} className="grid gap-6 sm:grid-cols-3">
+        {hero.stats.map((stat, index) => (
+          <ScrollReveal
             key={stat.label}
-            className="rounded-xl border border-white/10 bg-white/5 p-6 text-center sm:text-left"
+            variant="up"
+            className={
+              index === 1
+                ? "scroll-reveal-delay-1"
+                : index === 2
+                  ? "scroll-reveal-delay-2"
+                  : ""
+            }
           >
-            <p className="text-4xl font-semibold tracking-tight text-white sm:text-5xl">
-              <CountUpValue stat={stat} isVisible={isVisible} />
-            </p>
-            <p className="mt-3 text-sm leading-6 text-slate-400">{stat.label}</p>
-          </div>
+            <div className="rounded-xl border border-white/10 bg-white/5 p-6 text-center sm:text-left">
+              <p className="text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+                <CountUpValue stat={stat} isVisible={isVisible} />
+              </p>
+              <p className="mt-3 text-sm leading-6 text-slate-400">{stat.label}</p>
+            </div>
+          </ScrollReveal>
         ))}
       </div>
     </div>

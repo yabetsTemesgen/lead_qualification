@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Binary } from "lucide-react";
 import { SiteHeader } from "@/components/landing/site-header";
 import { navLinks, site } from "@/lib/landing-content";
+import { inPageScrollLinkProps } from "@/lib/scroll-link";
 
 export { SiteHeader };
 
@@ -35,7 +36,12 @@ export function SiteFooter() {
         </div>
         <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-400">
           {navLinks.map((link) => (
-            <a key={link.href} className="transition hover:text-white" href={link.href}>
+            <a
+              key={link.href}
+              className="transition hover:text-white"
+              href={link.href}
+              {...inPageScrollLinkProps(link.href)}
+            >
               {link.label}
             </a>
           ))}

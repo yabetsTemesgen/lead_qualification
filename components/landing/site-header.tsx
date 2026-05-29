@@ -6,6 +6,7 @@ import { useEffect, useId, useState } from "react";
 import { openLeadChat } from "@/components/chat/lead-chat-widget";
 import { OpenChatTrigger } from "@/components/chat/open-chat-trigger";
 import { navLinks, site } from "@/lib/landing-content";
+import { inPageScrollLinkProps } from "@/lib/scroll-link";
 
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -59,7 +60,12 @@ export function SiteHeader() {
             aria-label="Main navigation"
           >
             {navLinks.map((link) => (
-              <a key={link.href} className="transition hover:text-white" href={link.href}>
+              <a
+                key={link.href}
+                className="transition hover:text-white"
+                href={link.href}
+                {...inPageScrollLinkProps(link.href)}
+              >
                 {link.label}
               </a>
             ))}
@@ -87,6 +93,7 @@ export function SiteHeader() {
 
       <div
         id={menuId}
+        data-lenis-prevent
         className={`fixed inset-x-0 top-18 bottom-0 z-30 overflow-y-auto border-t border-white/10 bg-slate-950/98 backdrop-blur-xl transition-[visibility,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none lg:hidden ${
           menuOpen
             ? "visible opacity-100"
@@ -102,6 +109,7 @@ export function SiteHeader() {
             <a
               key={link.href}
               href={link.href}
+              {...inPageScrollLinkProps(link.href)}
               className="rounded-lg px-3 py-3 text-base font-medium text-slate-200 transition hover:bg-white/5 hover:text-white"
               onClick={closeMenu}
             >

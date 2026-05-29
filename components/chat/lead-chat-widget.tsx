@@ -455,7 +455,10 @@ export function LeadChatWidget() {
             </button>
           </header>
 
-          <div className="scrollbar-hidden flex-1 space-y-3 overflow-y-auto px-4 py-4">
+          <div
+            data-lenis-prevent
+            className="scrollbar-hidden flex-1 space-y-3 overflow-y-auto px-4 py-4"
+          >
             {messages.map((msg) => (
               <div
                 key={msg.id}
@@ -519,7 +522,7 @@ export function LeadChatWidget() {
                       type="button"
                       onClick={() => void sendMessage("yes")}
                       disabled={isTyping}
-                      className="flex-1 rounded-md bg-gradient-brand-outline py-2 text-sm font-medium text-gradient-brand disabled:opacity-50"
+                      className="flex-1 rounded-md border border-white/15 bg-white/5 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10 disabled:opacity-50"
                     >
                       Yes, share details
                     </button>

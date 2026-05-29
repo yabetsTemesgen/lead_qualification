@@ -10,6 +10,7 @@ import { OpenChatButton } from "@/components/chat/open-chat-button";
 import { OpenChatTrigger } from "@/components/chat/open-chat-trigger";
 import { FaqAccordion } from "@/components/landing/faq-accordion";
 import { HeroStats } from "@/components/landing/hero-stats";
+import { ScrollReveal } from "@/components/landing/scroll-reveal";
 import { TestimonialsCarousel } from "@/components/landing/testimonials-carousel";
 import {
   contact,
@@ -17,6 +18,7 @@ import {
   site,
   whyChooseUs,
 } from "@/lib/landing-content";
+import { inPageScrollLinkProps } from "@/lib/scroll-link";
 
 function SectionHeading({
   eyebrow,
@@ -30,7 +32,7 @@ function SectionHeading({
   centered?: boolean;
 }) {
   return (
-    <div className={centered ? "mx-auto max-w-3xl text-center" : "max-w-3xl"}>
+    <ScrollReveal variant="scale" className={centered ? "mx-auto max-w-3xl text-center" : "max-w-3xl"}>
       <p className="text-sm font-semibold tracking-[0.24em] text-gradient-brand uppercase">
         {eyebrow}
       </p>
@@ -38,7 +40,7 @@ function SectionHeading({
       {description ? (
         <p className="mt-4 text-lg leading-8 text-slate-300">{description}</p>
       ) : null}
-    </div>
+    </ScrollReveal>
   );
 }
 
@@ -57,27 +59,34 @@ export function HeroSection() {
         <div className="relative mx-auto flex w-full max-w-7xl flex-1 items-center px-6 py-16 lg:px-8 lg:py-12">
           <div className="grid w-full gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-16">
           <div className="flex flex-col justify-center">
-            <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-white sm:text-5xl lg:text-6xl">
-              {hero.title}
-            </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
-              {hero.description}
-            </p>
-            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <OpenChatTrigger className="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-brand px-6 py-3 text-sm font-semibold">
-                {hero.primaryCta}
-                <ArrowRight className="h-4 w-4" />
-              </OpenChatTrigger>
-              <a
-                href="#services"
-                className="inline-flex items-center justify-center rounded-lg border border-white/15 px-6 py-3 text-sm font-semibold text-slate-100 transition hover:border-white/30 hover:bg-white/5"
-              >
-                {hero.secondaryCta}
-              </a>
-            </div>
+            <ScrollReveal>
+              <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-white sm:text-5xl lg:text-6xl">
+                {hero.title}
+              </h1>
+            </ScrollReveal>
+            <ScrollReveal className="scroll-reveal-delay-1">
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
+                {hero.description}
+              </p>
+            </ScrollReveal>
+            <ScrollReveal className="scroll-reveal-delay-2">
+              <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+                <OpenChatTrigger className="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-brand px-6 py-3 text-sm font-semibold">
+                  {hero.primaryCta}
+                  <ArrowRight className="h-4 w-4" />
+                </OpenChatTrigger>
+                <a
+                  href="#services"
+                  {...inPageScrollLinkProps("#services")}
+                  className="inline-flex items-center justify-center rounded-lg border border-white/15 px-6 py-3 text-sm font-semibold text-slate-100 transition hover:border-white/30 hover:bg-white/5"
+                >
+                  {hero.secondaryCta}
+                </a>
+              </div>
+            </ScrollReveal>
           </div>
 
-          <div className="relative flex items-center justify-center lg:justify-end">
+          <ScrollReveal speed={0.35} className="relative flex items-center justify-center lg:justify-end">
             <div
               className="pointer-events-none absolute inset-0 translate-x-4 translate-y-4 rounded-xl bg-cyan-400/15 blur-3xl"
               aria-hidden
@@ -93,7 +102,7 @@ export function HeroSection() {
                 sizes="(max-width: 1024px) 100vw, 512px"
               />
             </div>
-          </div>
+          </ScrollReveal>
         </div>
         </div>
       </section>
@@ -115,19 +124,30 @@ export function WhyChooseUsSection() {
         centered
       />
       <div className="mt-12 grid gap-6 sm:grid-cols-2">
-        {whyChooseUs.map((item) => {
+        {whyChooseUs.map((item, index) => {
           const Icon = item.icon;
           return (
-            <article
+            <ScrollReveal
               key={item.title}
-              className="rounded-xl border border-white/10 bg-white/5 p-6"
+              variant={index % 2 === 0 ? "left" : "right"}
+              className={
+                index === 1
+                  ? "scroll-reveal-delay-1"
+                  : index === 2
+                    ? "scroll-reveal-delay-2"
+                    : index === 3
+                      ? "scroll-reveal-delay-3"
+                      : ""
+              }
             >
+              <article className="h-full rounded-xl border border-white/10 bg-white/5 p-6">
               <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-cyan-400/15 text-cyan-300 ring-1 ring-cyan-300/25">
                 <Icon className="h-5 w-5" />
               </div>
               <h3 className="mt-5 text-xl font-semibold text-white">{item.title}</h3>
               <p className="mt-3 text-sm leading-7 text-slate-300">{item.description}</p>
-            </article>
+              </article>
+            </ScrollReveal>
           );
         })}
       </div>
@@ -147,7 +167,9 @@ export function TestimonialsSection() {
           title="Trusted by teams that care about Quality"
         />
       </div>
-      <TestimonialsCarousel />
+      <ScrollReveal variant="scale" className="mt-10">
+        <TestimonialsCarousel />
+      </ScrollReveal>
     </section>
   );
 }
@@ -161,7 +183,9 @@ export function FaqSection() {
         description="Everything you need to know before we start."
         centered
       />
-      <FaqAccordion />
+      <ScrollReveal variant="fade" className="mt-10">
+        <FaqAccordion />
+      </ScrollReveal>
     </section>
   );
 }
@@ -180,6 +204,7 @@ export function ContactSection() {
         </div>
 
         <div className="glass-contact relative grid gap-8 rounded-xl border border-white/10 p-8 lg:grid-cols-[1fr_0.95fr] lg:items-center lg:p-10">
+        <ScrollReveal variant="left">
         <div>
           <p className="text-sm font-semibold tracking-[0.24em] text-gradient-brand uppercase">
             Get started
@@ -201,6 +226,8 @@ export function ContactSection() {
             </a>
           </div>
         </div>
+        </ScrollReveal>
+        <ScrollReveal variant="right" className="scroll-reveal-delay-2">
         <div className="flex flex-col gap-5 lg:gap-6 lg:py-2">
           {contact.channels.map((channel) => {
             const Icon = channel.label === "Email" ? Mail : Phone;
@@ -226,6 +253,7 @@ export function ContactSection() {
             );
           })}
         </div>
+        </ScrollReveal>
         </div>
       </div>
     </section>

@@ -3,7 +3,9 @@
 import { ArrowUpRight } from "lucide-react";
 import { useState } from "react";
 import { ServiceGraphic } from "@/components/landing/service-graphic";
+import { ScrollReveal } from "@/components/landing/scroll-reveal";
 import { services } from "@/lib/landing-content";
+import { inPageScrollLinkProps } from "@/lib/scroll-link";
 
 const ROW_HEIGHT_DESKTOP = "lg:min-h-[20rem]";
 
@@ -93,6 +95,7 @@ export function ServicesSection() {
 
   return (
     <section id="services" className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
+      <ScrollReveal variant="scale">
       <div className="overflow-x-hidden rounded-xl border border-white/10 bg-white/5">
         <div className="flex flex-col gap-6 border-b border-white/10 px-6 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10 lg:py-10">
           <div>
@@ -105,6 +108,7 @@ export function ServicesSection() {
           </div>
           <a
             href="#contact"
+            {...inPageScrollLinkProps("#contact")}
             className="inline-flex w-fit items-center gap-2 rounded-lg bg-gradient-brand-outline px-5 py-2.5 text-sm font-medium text-white"
           >
             See all Services
@@ -124,6 +128,7 @@ export function ServicesSection() {
           ))}
         </div>
       </div>
+      </ScrollReveal>
     </section>
   );
 }
