@@ -8,6 +8,7 @@ export function inPageScrollLinkProps(href: string): Record<string, string> {
 
   return {
     "data-scroll-to": "",
+    "data-scroll-to-href": href,
     // Lenis adds offset to the target scroll position — negative keeps content below the navbar.
     "data-scroll-to-offset": String(-HEADER_SCROLL_OFFSET),
   };

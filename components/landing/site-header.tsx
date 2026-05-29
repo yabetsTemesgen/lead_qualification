@@ -43,7 +43,12 @@ export function SiteHeader() {
     <>
       <header className="fixed inset-x-0 top-0 z-40 bg-neutral-950/90 backdrop-blur-xl supports-backdrop-filter:bg-neutral-950/75">
         <div className="mx-auto flex h-18 w-full max-w-7xl items-center justify-between gap-4 px-6 lg:grid lg:grid-cols-[auto_1fr_auto] lg:gap-10 lg:px-8">
-          <Link href="/" className="flex min-w-0 items-center gap-3" onClick={closeMenu}>
+          <Link
+            href="#hero"
+            className="flex min-w-0 items-center gap-3"
+            onClick={closeMenu}
+            {...inPageScrollLinkProps("#hero")}
+          >
             <div className="surface-icon flex h-10 w-10 shrink-0 items-center justify-center rounded-lg">
               <Binary className="h-5 w-5" />
             </div>

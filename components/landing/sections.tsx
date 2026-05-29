@@ -47,7 +47,7 @@ function SectionHeading({
 export function HeroSection() {
   return (
     <>
-      <section className="relative flex flex-col overflow-hidden lg:min-h-[calc(100svh-4.5rem)]">
+      <section id="hero" className="relative flex flex-col overflow-hidden lg:min-h-[calc(100svh-4.5rem)]">
         <div
           className="pointer-events-none absolute inset-0 bg-grid-subtle opacity-[0.35]"
           aria-hidden

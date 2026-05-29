@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { useState } from "react";
 import { ServiceGraphic } from "@/components/landing/service-graphic";
 import { ScrollReveal } from "@/components/landing/scroll-reveal";
@@ -9,7 +9,29 @@ import { inPageScrollLinkProps } from "@/lib/scroll-link";
 
 const ROW_HEIGHT_DESKTOP = "lg:min-h-[20rem]";
 
-function ServiceRow({
+function ServiceRowMobile({
+  service,
+}: {
+  service: (typeof services)[number];
+}) {
+  return (
+    <div className="border-b border-white/10 px-6 py-8 last:border-b-0 sm:px-8">
+      <h3 className="text-xl font-semibold tracking-tight text-white">
+        {service.name}
+      </h3>
+      <p className="mt-3 text-base leading-7 text-neutral-400">{service.teaser}</p>
+      <a
+        href={service.href}
+        className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-neutral-200 transition hover:text-white"
+      >
+        Learn more
+        <ArrowRight className="h-4 w-4" />
+      </a>
+    </div>
+  );
+}
+
+function ServiceRowDesktop({
   service,
   isActive,
   onActivate,
@@ -23,46 +45,54 @@ function ServiceRow({
   const Icon = service.icon;
 
   return (
-    <article
+    <div
       tabIndex={0}
-      className="border-b border-white/10 outline-none last:border-b-0 focus-visible:ring-2 focus-visible:ring-white/25 focus-visible:ring-inset"
+      className="service-card-interactive border-b border-white/10 outline-none last:border-b-0 focus-visible:ring-2 focus-visible:ring-white/25 focus-visible:ring-inset"
       onMouseEnter={onActivate}
       onMouseLeave={onDeactivate}
       onFocus={onActivate}
       onBlur={onDeactivate}
-      onClick={onActivate}
     >
       <div
         className={`relative service-card-active ${ROW_HEIGHT_DESKTOP} ${
           isActive
-            ? "overflow-visible lg:overflow-hidden bg-linear-to-br from-white/[0.06] via-neutral-950 to-white/[0.03] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)]"
-            : "overflow-visible lg:overflow-hidden service-card-idle bg-transparent"
+            ? "overflow-hidden bg-linear-to-br from-white/[0.06] via-neutral-950 to-white/[0.03] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)]"
+            : "overflow-hidden service-card-idle bg-transparent"
         }`}
       >
         <div
-          className={`service-card-layer z-3 grid grid-cols-1 items-start gap-4 px-6 pt-8 pb-10 sm:px-8 sm:pb-12 max-lg:relative lg:absolute lg:inset-0 lg:items-center lg:gap-12 lg:py-10 lg:grid-cols-[minmax(220px,36%)_1fr] lg:pl-10 lg:pr-12 ${
+          className={`service-card-layer z-3 absolute inset-0 grid items-center gap-12 py-10 pl-10 pr-12 grid-cols-[minmax(220px,36%)_1fr] ${
             isActive
-              ? "max-lg:hidden pointer-events-none opacity-0 lg:grid -translate-y-3 blur-[2px]"
+              ? "pointer-events-none opacity-0 -translate-y-3 blur-[2px]"
               : "opacity-100 translate-y-0 blur-0"
           }`}
           aria-hidden={isActive}
         >
-          <h3 className="text-xl font-semibold tracking-tight text-white lg:text-2xl">
+          <h3 className="service-card-title text-2xl font-semibold tracking-tight text-white transition-colors duration-300">
             {service.name}
           </h3>
-          <p className="text-base leading-7 text-neutral-400">{service.teaser}</p>
+          <div className="relative">
+            <span
+              className="service-card-hover-hint absolute top-0 right-0 inline-flex items-center gap-1.5 text-xs font-medium tracking-wide text-neutral-500 uppercase"
+              aria-hidden
+            >
+              Hover to explore
+              <ArrowRight className="h-3.5 w-3.5" />
+            </span>
+            <p className="pr-36 text-base leading-7 text-neutral-400">{service.teaser}</p>
+          </div>
         </div>
 
         <div
-          className={`service-card-layer service-card-layer--enter z-4 grid grid-cols-1 max-lg:relative lg:absolute lg:inset-0 lg:grid-cols-2 ${
+          className={`service-card-layer service-card-layer--enter z-4 absolute inset-0 grid grid-cols-2 ${
             isActive
               ? "opacity-100 translate-y-0"
-              : "max-lg:hidden pointer-events-none opacity-0 translate-y-4"
+              : "pointer-events-none opacity-0 translate-y-4"
           }`}
           aria-hidden={!isActive}
         >
-          <div className="flex flex-col justify-center px-6 py-8 sm:px-8 lg:px-12 lg:py-10">
-            <h3 className="bg-linear-to-r from-neutral-100 via-neutral-200 to-neutral-400 bg-clip-text text-2xl font-semibold tracking-tight text-transparent lg:text-3xl">
+          <div className="flex flex-col justify-center px-12 py-10">
+            <h3 className="bg-linear-to-r from-neutral-100 via-neutral-200 to-neutral-400 bg-clip-text text-3xl font-semibold tracking-tight text-transparent">
               {service.name}
             </h3>
             <p className="mt-4 max-w-xl text-base leading-7 text-neutral-300">
@@ -78,13 +108,41 @@ function ServiceRow({
             </a>
           </div>
           <div
-            className={`service-card-graphic min-h-56 shrink-0 lg:h-full lg:min-h-0 ${
+            className={`service-card-graphic h-full min-h-0 ${
               isActive ? "opacity-100 scale-100" : "pointer-events-none opacity-0 scale-[0.98]"
             }`}
           >
             <ServiceGraphic icon={Icon} />
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function ServiceRow({
+  service,
+  isActive,
+  onActivate,
+  onDeactivate,
+}: {
+  service: (typeof services)[number];
+  isActive: boolean;
+  onActivate: () => void;
+  onDeactivate: () => void;
+}) {
+  return (
+    <article>
+      <div className="lg:hidden">
+        <ServiceRowMobile service={service} />
+      </div>
+      <div className="hidden lg:block">
+        <ServiceRowDesktop
+          service={service}
+          isActive={isActive}
+          onActivate={onActivate}
+          onDeactivate={onDeactivate}
+        />
       </div>
     </article>
   );
