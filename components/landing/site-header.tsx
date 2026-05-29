@@ -41,22 +41,22 @@ export function SiteHeader() {
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-40 bg-slate-950/90 backdrop-blur-xl supports-backdrop-filter:bg-slate-950/75">
+      <header className="fixed inset-x-0 top-0 z-40 bg-neutral-950/90 backdrop-blur-xl supports-backdrop-filter:bg-neutral-950/75">
         <div className="mx-auto flex h-18 w-full max-w-7xl items-center justify-between gap-4 px-6 lg:grid lg:grid-cols-[auto_1fr_auto] lg:gap-10 lg:px-8">
           <Link href="/" className="flex min-w-0 items-center gap-3" onClick={closeMenu}>
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-cyan-400/15 text-cyan-300 ring-1 ring-cyan-300/25">
+            <div className="surface-icon flex h-10 w-10 shrink-0 items-center justify-center rounded-lg">
               <Binary className="h-5 w-5" />
             </div>
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold tracking-[0.24em] text-gradient-brand uppercase">
                 {site.name}
               </p>
-              <p className="truncate text-sm text-slate-400">{site.tagline}</p>
+              <p className="truncate text-sm text-neutral-400">{site.tagline}</p>
             </div>
           </Link>
 
           <nav
-            className="hidden items-center justify-center gap-x-10 text-sm text-slate-300 lg:flex"
+            className="hidden items-center justify-center gap-x-10 text-sm text-neutral-300 lg:flex"
             aria-label="Main navigation"
           >
             {navLinks.map((link) => (
@@ -79,7 +79,7 @@ export function SiteHeader() {
 
             <button
               type="button"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-white/15 text-slate-200 transition hover:border-white/30 hover:bg-white/5 lg:hidden"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-white/12 text-neutral-200 transition hover:border-white/22 hover:bg-white/5 lg:hidden"
               aria-expanded={menuOpen}
               aria-controls={menuId}
               aria-label={menuOpen ? "Close menu" : "Open menu"}
@@ -94,7 +94,7 @@ export function SiteHeader() {
       <div
         id={menuId}
         data-lenis-prevent
-        className={`fixed inset-x-0 top-18 bottom-0 z-30 overflow-y-auto border-t border-white/10 bg-slate-950/98 backdrop-blur-xl transition-[visibility,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none lg:hidden ${
+        className={`fixed inset-x-0 top-18 bottom-0 z-30 overflow-y-auto border-t border-white/10 bg-neutral-950/98 backdrop-blur-xl transition-[visibility,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none lg:hidden ${
           menuOpen
             ? "visible opacity-100"
             : "invisible pointer-events-none opacity-0"
@@ -110,7 +110,7 @@ export function SiteHeader() {
               key={link.href}
               href={link.href}
               {...inPageScrollLinkProps(link.href)}
-              className="rounded-lg px-3 py-3 text-base font-medium text-slate-200 transition hover:bg-white/5 hover:text-white"
+              className="rounded-lg px-3 py-3 text-base font-medium text-neutral-200 transition hover:bg-white/5 hover:text-white"
               onClick={closeMenu}
             >
               {link.label}

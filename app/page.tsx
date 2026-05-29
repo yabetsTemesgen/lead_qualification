@@ -13,7 +13,7 @@ import {
 export default function Home() {
   return (
     <LocomotiveScrollProvider>
-      <div className="relative min-h-screen bg-slate-950 text-slate-100">
+      <div className="relative min-h-screen bg-neutral-950 text-neutral-100">
         <PageBackground />
         <SiteHeader />
         <main className="relative pt-18">

@@ -65,12 +65,12 @@ export function TestimonialsCarousel() {
               className="shrink-0 rounded-xl border border-white/10 bg-white/5 p-6"
               style={slideWidth > 0 ? { width: slideWidth } : { width: "100%" }}
             >
-              <blockquote className="text-base leading-8 text-slate-200">
+              <blockquote className="text-base leading-8 text-neutral-200">
                 &ldquo;{testimonial.quote}&rdquo;
               </blockquote>
               <figcaption className="mt-6">
                 <p className="font-semibold text-white">{testimonial.name}</p>
-                <p className="text-sm text-slate-400">{testimonial.role}</p>
+                <p className="text-sm text-neutral-400">{testimonial.role}</p>
               </figcaption>
             </figure>
           ))}
@@ -88,7 +88,7 @@ export function TestimonialsCarousel() {
               onClick={() => setIndex(dotIndex)}
               className={`h-2 rounded-full transition-all duration-300 ${
                 dotIndex === index
-                  ? "w-6 bg-cyan-400"
+                  ? "w-6 bg-neutral-200"
                   : "w-2 bg-white/20 hover:bg-white/35"
               }`}
             />
@@ -101,7 +101,7 @@ export function TestimonialsCarousel() {
             aria-label="Previous testimonials"
             onClick={goPrev}
             disabled={index === 0}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-white/15 text-slate-200 transition hover:border-white/30 hover:bg-white/5 disabled:pointer-events-none disabled:opacity-35"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-white/12 text-neutral-200 transition hover:border-white/22 hover:bg-white/5 disabled:pointer-events-none disabled:opacity-35"
           >
             <ChevronLeft className="h-5 w-5" />
           </button>
@@ -110,7 +110,7 @@ export function TestimonialsCarousel() {
             aria-label="Next testimonials"
             onClick={goNext}
             disabled={index >= maxIndex}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-white/15 text-slate-200 transition hover:border-white/30 hover:bg-white/5 disabled:pointer-events-none disabled:opacity-35"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-white/12 text-neutral-200 transition hover:border-white/22 hover:bg-white/5 disabled:pointer-events-none disabled:opacity-35"
           >
             <ChevronRight className="h-5 w-5" />
           </button>

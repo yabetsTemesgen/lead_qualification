@@ -25,7 +25,7 @@ function ServiceRow({
   return (
     <article
       tabIndex={0}
-      className="border-b border-white/10 outline-none last:border-b-0 focus-visible:ring-2 focus-visible:ring-cyan-400/60 focus-visible:ring-inset"
+      className="border-b border-white/10 outline-none last:border-b-0 focus-visible:ring-2 focus-visible:ring-white/25 focus-visible:ring-inset"
       onMouseEnter={onActivate}
       onMouseLeave={onDeactivate}
       onFocus={onActivate}
@@ -35,7 +35,7 @@ function ServiceRow({
       <div
         className={`relative service-card-active ${ROW_HEIGHT_DESKTOP} ${
           isActive
-            ? "overflow-visible lg:overflow-hidden bg-linear-to-br from-cyan-400/12 via-slate-950 to-cyan-500/8 shadow-[inset_0_1px_0_0_rgba(34,211,238,0.2)]"
+            ? "overflow-visible lg:overflow-hidden bg-linear-to-br from-white/[0.06] via-neutral-950 to-white/[0.03] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)]"
             : "overflow-visible lg:overflow-hidden service-card-idle bg-transparent"
         }`}
       >
@@ -50,7 +50,7 @@ function ServiceRow({
           <h3 className="text-xl font-semibold tracking-tight text-white lg:text-2xl">
             {service.name}
           </h3>
-          <p className="text-base leading-7 text-slate-400">{service.teaser}</p>
+          <p className="text-base leading-7 text-neutral-400">{service.teaser}</p>
         </div>
 
         <div
@@ -62,10 +62,10 @@ function ServiceRow({
           aria-hidden={!isActive}
         >
           <div className="flex flex-col justify-center px-6 py-8 sm:px-8 lg:px-12 lg:py-10">
-            <h3 className="bg-linear-to-r from-cyan-200 via-cyan-300 to-sky-300 bg-clip-text text-2xl font-semibold tracking-tight text-transparent lg:text-3xl">
+            <h3 className="bg-linear-to-r from-neutral-100 via-neutral-200 to-neutral-400 bg-clip-text text-2xl font-semibold tracking-tight text-transparent lg:text-3xl">
               {service.name}
             </h3>
-            <p className="mt-4 max-w-xl text-base leading-7 text-slate-300">
+            <p className="mt-4 max-w-xl text-base leading-7 text-neutral-300">
               {service.description}
             </p>
             <a

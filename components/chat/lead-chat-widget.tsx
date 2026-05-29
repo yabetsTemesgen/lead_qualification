@@ -431,24 +431,24 @@ export function LeadChatWidget() {
           id="lead-chat-panel"
           role="dialog"
           aria-label="Project assistant chat"
-          className="fixed right-5 bottom-20 z-50 flex h-[min(560px,calc(100vh-6rem))] w-[min(100vw-2.5rem,400px)] flex-col overflow-hidden rounded-lg border border-white/15 bg-slate-950 shadow-2xl shadow-black/50"
+          className="fixed right-5 bottom-20 z-50 flex h-[min(560px,calc(100vh-6rem))] w-[min(100vw-2.5rem,400px)] flex-col overflow-hidden rounded-lg border border-white/12 bg-neutral-950 shadow-2xl shadow-black/60"
         >
-          <header className="flex items-center justify-between border-b border-white/10 bg-slate-900/80 px-4 py-3">
+          <header className="flex items-center justify-between border-b border-white/10 bg-neutral-900/80 px-4 py-3">
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-400/15 text-cyan-300">
+              <div className="surface-icon flex h-8 w-8 items-center justify-center rounded-lg">
                 <Binary className="h-4 w-4" />
               </div>
               <div>
                 <p className="text-sm font-semibold text-white">
                   {site.name} {site.tagline}
                 </p>
-                <p className="text-xs text-slate-400">Project assistant</p>
+                <p className="text-xs text-neutral-400">Project assistant</p>
               </div>
             </div>
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="rounded-lg p-1.5 text-slate-400 transition hover:bg-white/10 hover:text-white"
+              className="rounded-lg p-1.5 text-neutral-400 transition hover:bg-white/10 hover:text-white"
               aria-label="Close chat"
             >
               <X className="h-5 w-5" />
@@ -467,8 +467,8 @@ export function LeadChatWidget() {
                 <div
                   className={`max-w-[88%] rounded-lg px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
                     msg.role === "user"
-                      ? "bg-gradient-to-r from-cyan-500/25 via-sky-500/20 to-cyan-400/20 text-cyan-50"
-                      : "bg-white/5 text-slate-200"
+                      ? "bg-linear-to-r from-white/12 via-white/8 to-white/6 text-neutral-100"
+                      : "bg-white/5 text-neutral-200"
                   }`}
                 >
                   {msg.text}
@@ -479,7 +479,7 @@ export function LeadChatWidget() {
             {isTyping ? (
               <div className="flex justify-start">
                 <div
-                  className="inline-flex items-center rounded-lg bg-white/5 px-3.5 py-2.5 text-sm text-slate-400"
+                  className="inline-flex items-center rounded-lg bg-white/5 px-3.5 py-2.5 text-sm text-neutral-400"
                   aria-label="Thinking"
                   role="status"
                 >
@@ -496,9 +496,9 @@ export function LeadChatWidget() {
             <div ref={messagesEndRef} />
           </div>
 
-          <div className="border-t border-white/10 bg-slate-900/50 p-4">
+          <div className="border-t border-white/10 bg-neutral-900/50 p-4">
             {alreadySubmitted && step !== "success" ? (
-              <p className="mb-3 text-center text-sm text-slate-400">
+              <p className="mb-3 text-center text-sm text-neutral-400">
                 You already submitted an inquiry.{" "}
                 <button
                   type="button"
@@ -522,7 +522,7 @@ export function LeadChatWidget() {
                       type="button"
                       onClick={() => void sendMessage("yes")}
                       disabled={isTyping}
-                      className="flex-1 rounded-md border border-white/15 bg-white/5 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10 disabled:opacity-50"
+                      className="flex-1 rounded-md border border-white/15 bg-white/5 py-2 text-sm font-medium text-neutral-200 transition hover:bg-white/10 disabled:opacity-50"
                     >
                       Yes, share details
                     </button>
@@ -530,7 +530,7 @@ export function LeadChatWidget() {
                       type="button"
                       onClick={() => void sendMessage("no")}
                       disabled={isTyping}
-                      className="flex-1 rounded-md border border-white/15 bg-white/5 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10 disabled:opacity-50"
+                      className="flex-1 rounded-md border border-white/15 bg-white/5 py-2 text-sm font-medium text-neutral-200 transition hover:bg-white/10 disabled:opacity-50"
                     >
                       Not yet
                     </button>
@@ -550,7 +550,7 @@ export function LeadChatWidget() {
                         ? "Reply yes or no…"
                         : "Enter Your Message…"
                     }
-                    className="h-11 flex-1 resize-none rounded-md border border-white/15 bg-slate-950/80 px-3 py-2 text-sm leading-normal text-white placeholder:text-slate-500 focus:border-cyan-300/50 focus:outline-none disabled:opacity-60"
+                    className="h-11 flex-1 resize-none rounded-md border border-white/12 bg-neutral-950/80 px-3 py-2 text-sm leading-normal text-white placeholder:text-neutral-500 focus:border-white/25 focus:outline-none disabled:opacity-60"
                   />
                   <button
                     type="button"
@@ -570,18 +570,18 @@ export function LeadChatWidget() {
             {step === "contact" && !alreadySubmitted ? (
               <form onSubmit={handleSubmitLead} className="space-y-3" noValidate>
                 {normalized.service ? (
-                  <p className="rounded-lg bg-white/5 px-3 py-2 text-xs text-slate-400">
-                    <span className="text-slate-300">Project:</span>{" "}
+                  <p className="rounded-lg bg-white/5 px-3 py-2 text-xs text-neutral-400">
+                    <span className="text-neutral-300">Project:</span>{" "}
                     {normalized.service}
                     {normalized.budget ? ` · ${normalized.budget}` : ""}
                     {normalized.timeline ? ` · ${normalized.timeline}` : ""}
                   </p>
                 ) : null}
 
-                <p className="text-sm font-medium text-slate-200">
+                <p className="text-sm font-medium text-neutral-200">
                   Contact details
                 </p>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-neutral-500">
                   Submitting sends your inquiry to our team (n8n workflow).
                 </p>
 
@@ -601,7 +601,7 @@ export function LeadChatWidget() {
                       }
                     }}
                     aria-invalid={Boolean(contactErrors.fullName)}
-                    className="w-full rounded-md border border-white/15 bg-slate-950/80 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-cyan-300/50 focus:outline-none aria-invalid:border-rose-400/60"
+                    className="w-full rounded-md border border-white/12 bg-neutral-950/80 px-3 py-2.5 text-sm text-white placeholder:text-neutral-500 focus:border-white/25 focus:outline-none aria-invalid:border-rose-400/60"
                   />
                   {contactErrors.fullName ? (
                     <p className="mt-1 text-xs text-rose-300">{contactErrors.fullName}</p>
@@ -625,7 +625,7 @@ export function LeadChatWidget() {
                       }
                     }}
                     aria-invalid={Boolean(contactErrors.email)}
-                    className="w-full rounded-md border border-white/15 bg-slate-950/80 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-cyan-300/50 focus:outline-none aria-invalid:border-rose-400/60"
+                    className="w-full rounded-md border border-white/12 bg-neutral-950/80 px-3 py-2.5 text-sm text-white placeholder:text-neutral-500 focus:border-white/25 focus:outline-none aria-invalid:border-rose-400/60"
                   />
                   {contactErrors.email ? (
                     <p className="mt-1 text-xs text-rose-300">{contactErrors.email}</p>
@@ -651,7 +651,7 @@ export function LeadChatWidget() {
                       }
                     }}
                     aria-invalid={Boolean(contactErrors.companyName)}
-                    className="w-full rounded-md border border-white/15 bg-slate-950/80 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-cyan-300/50 focus:outline-none aria-invalid:border-rose-400/60"
+                    className="w-full rounded-md border border-white/12 bg-neutral-950/80 px-3 py-2.5 text-sm text-white placeholder:text-neutral-500 focus:border-white/25 focus:outline-none aria-invalid:border-rose-400/60"
                   />
                   {contactErrors.companyName ? (
                     <p className="mt-1 text-xs text-rose-300">
@@ -676,7 +676,7 @@ export function LeadChatWidget() {
                         setContactErrors((err) => ({ ...err, phone: undefined }));
                       }
                     }}
-                    className="w-full rounded-md border border-white/15 bg-slate-950/80 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-cyan-300/50 focus:outline-none"
+                    className="w-full rounded-md border border-white/12 bg-neutral-950/80 px-3 py-2.5 text-sm text-white placeholder:text-neutral-500 focus:border-white/25 focus:outline-none"
                   />
                 </div>
 
@@ -696,7 +696,7 @@ export function LeadChatWidget() {
                     setContactConsent("declined");
                     setStep("chatting");
                   }}
-                  className="w-full text-center text-xs text-slate-500 underline"
+                  className="w-full text-center text-xs text-neutral-500 underline"
                 >
                   Back to chat
                 </button>
@@ -704,7 +704,7 @@ export function LeadChatWidget() {
             ) : null}
 
             {step === "submitting" ? (
-              <p className="flex items-center justify-center gap-2 text-sm text-slate-400">
+              <p className="flex items-center justify-center gap-2 text-sm text-neutral-400">
                 <Loader2 className="h-4 w-4 animate-spin" />
                 Submitting your inquiry…
               </p>
@@ -717,7 +717,7 @@ export function LeadChatWidget() {
                   resetChat();
                   setOpen(false);
                 }}
-                className="w-full rounded-lg border border-white/15 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-white/5"
+                className="w-full rounded-lg border border-white/15 py-2.5 text-sm font-medium text-neutral-200 transition hover:bg-white/5"
               >
                 Close
               </button>

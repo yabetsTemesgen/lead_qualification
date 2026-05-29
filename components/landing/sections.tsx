@@ -38,7 +38,7 @@ function SectionHeading({
       </p>
       <h2 className="mt-3 text-3xl font-semibold text-white sm:text-4xl">{title}</h2>
       {description ? (
-        <p className="mt-4 text-lg leading-8 text-slate-300">{description}</p>
+        <p className="mt-4 text-lg leading-8 text-neutral-300">{description}</p>
       ) : null}
     </ScrollReveal>
   );
@@ -53,7 +53,7 @@ export function HeroSection() {
           aria-hidden
         />
         <div
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,rgba(34,211,238,0.08),transparent_55%)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,rgba(255,255,255,0.04),transparent_55%)]"
           aria-hidden
         />
         <div className="relative mx-auto flex w-full max-w-7xl flex-1 items-center px-6 py-16 lg:px-8 lg:py-12">
@@ -65,7 +65,7 @@ export function HeroSection() {
               </h1>
             </ScrollReveal>
             <ScrollReveal className="scroll-reveal-delay-1">
-              <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-neutral-300">
                 {hero.description}
               </p>
             </ScrollReveal>
@@ -78,7 +78,7 @@ export function HeroSection() {
                 <a
                   href="#services"
                   {...inPageScrollLinkProps("#services")}
-                  className="inline-flex items-center justify-center rounded-lg border border-white/15 px-6 py-3 text-sm font-semibold text-slate-100 transition hover:border-white/30 hover:bg-white/5"
+                  className="inline-flex items-center justify-center rounded-lg border border-white/12 px-6 py-3 text-sm font-semibold text-neutral-100 transition hover:border-white/22 hover:bg-white/5"
                 >
                   {hero.secondaryCta}
                 </a>
@@ -88,10 +88,10 @@ export function HeroSection() {
 
           <ScrollReveal speed={0.35} className="relative flex items-center justify-center lg:justify-end">
             <div
-              className="pointer-events-none absolute inset-0 translate-x-4 translate-y-4 rounded-xl bg-cyan-400/15 blur-3xl"
+              className="pointer-events-none absolute inset-0 translate-x-4 translate-y-4 rounded-xl bg-white/[0.04] blur-3xl"
               aria-hidden
             />
-            <div className="relative w-full max-w-lg overflow-hidden rounded-xl border border-white/10 shadow-2xl shadow-cyan-950/40 ring-1 ring-white/10">
+            <div className="relative w-full max-w-lg overflow-hidden rounded-xl border border-white/10 shadow-2xl shadow-black/50 ring-1 ring-white/10">
               <Image
                 src="/hero.png"
                 alt="Wipuu Labs team collaborating on software development"
@@ -141,11 +141,11 @@ export function WhyChooseUsSection() {
               }
             >
               <article className="h-full rounded-xl border border-white/10 bg-white/5 p-6">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-cyan-400/15 text-cyan-300 ring-1 ring-cyan-300/25">
+              <div className="surface-icon flex h-12 w-12 items-center justify-center rounded-lg">
                 <Icon className="h-5 w-5" />
               </div>
               <h3 className="mt-5 text-xl font-semibold text-white">{item.title}</h3>
-              <p className="mt-3 text-sm leading-7 text-slate-300">{item.description}</p>
+              <p className="mt-3 text-sm leading-7 text-neutral-300">{item.description}</p>
               </article>
             </ScrollReveal>
           );
@@ -199,7 +199,7 @@ export function ContactSection() {
           aria-hidden
         >
           <div className="absolute -left-20 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-white/8 blur-3xl" />
-          <div className="absolute -right-16 top-0 h-64 w-64 rounded-full bg-slate-400/10 blur-3xl" />
+          <div className="absolute -right-16 top-0 h-64 w-64 rounded-full bg-neutral-800/30 blur-3xl" />
           <div className="absolute inset-0 bg-grid-subtle opacity-20" />
         </div>
 
@@ -212,14 +212,14 @@ export function ContactSection() {
           <h2 className="mt-3 text-3xl font-semibold text-white sm:text-4xl">
             {contact.title}
           </h2>
-          <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-300">
+          <p className="mt-5 max-w-2xl text-lg leading-8 text-neutral-300">
             {contact.description}
           </p>
           <div className="mt-10 flex flex-col gap-4 sm:flex-row">
             <OpenChatButton>Start a conversation</OpenChatButton>
             <a
               href={`mailto:${site.email}`}
-              className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/15 px-6 py-3 text-sm font-semibold text-slate-100 transition hover:border-white/30 hover:bg-white/5"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/12 px-6 py-3 text-sm font-semibold text-neutral-100 transition hover:border-white/22 hover:bg-white/5"
             >
               {site.email}
               <ArrowRight className="h-4 w-4" />
@@ -238,7 +238,7 @@ export function ContactSection() {
                 className="block rounded-xl border border-white/10 bg-white/5 px-6 py-5 backdrop-blur-md transition hover:border-white/20 hover:bg-white/[0.07] lg:py-6"
               >
                 <div className="flex items-start gap-4">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-cyan-400/15 text-cyan-300 ring-1 ring-cyan-300/25">
+                  <div className="surface-icon flex h-11 w-11 items-center justify-center rounded-lg">
                     <Icon className="h-5 w-5" />
                   </div>
                   <div>
@@ -246,7 +246,7 @@ export function ContactSection() {
                       {channel.label}
                     </p>
                     <p className="mt-1 text-lg font-semibold text-white">{channel.value}</p>
-                    <p className="mt-1 text-sm text-slate-400">{channel.note}</p>
+                    <p className="mt-1 text-sm text-neutral-400">{channel.note}</p>
                   </div>
                 </div>
               </a>

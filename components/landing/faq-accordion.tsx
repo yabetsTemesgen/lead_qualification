@@ -26,7 +26,7 @@ function FaqItem({
           aria-expanded={isOpen}
           aria-controls={panelId}
           onClick={onToggle}
-          className="flex w-full cursor-pointer items-center justify-between gap-4 px-6 py-5 text-left text-base font-medium text-white transition-colors hover:text-cyan-100"
+          className="flex w-full cursor-pointer items-center justify-between gap-4 px-6 py-5 text-left text-base font-medium text-white transition-colors hover:text-neutral-200"
         >
           {question}
           <span
@@ -49,7 +49,7 @@ function FaqItem({
       >
         <div className="min-h-0 overflow-hidden">
           <p
-            className={`px-6 pb-5 text-sm leading-7 text-slate-300 transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
+            className={`px-6 pb-5 text-sm leading-7 text-neutral-300 transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
               isOpen ? "translate-y-0 opacity-100" : "-translate-y-1 opacity-0"
             }`}
           >

@@ -97,7 +97,7 @@ export function HeroStats() {
               <p className="text-4xl font-semibold tracking-tight text-white sm:text-5xl">
                 <CountUpValue stat={stat} isVisible={isVisible} />
               </p>
-              <p className="mt-3 text-sm leading-6 text-slate-400">{stat.label}</p>
+              <p className="mt-3 text-sm leading-6 text-neutral-400">{stat.label}</p>
             </div>
           </ScrollReveal>
         ))}
