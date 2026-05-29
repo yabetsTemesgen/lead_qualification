@@ -37,6 +37,7 @@ export function getQualificationFocus(
       "If they ask about services, summarize our offerings briefly, then ask which fits their need.",
       "Otherwise ask what they want to build (one short question).",
       "Do not ask about budget or timeline until service is clear.",
+      "If they ask for code or off-topic help, decline and redirect to their project.",
     ].join(" ");
   }
 

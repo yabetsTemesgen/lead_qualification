@@ -10,6 +10,11 @@ import {
 import { parseChatResponse } from "@/lib/chat/parse-chat-response";
 import { getQualificationFocus } from "@/lib/chat/qualification-focus";
 import { polishQualificationReply } from "@/lib/chat/qualification-prompts";
+import {
+  assistantReplyContainsCode,
+  getOffTopicReply,
+  isOffTopicUserMessage,
+} from "@/lib/chat/scope-guard";
 import { buildChatSystemPrompt } from "@/lib/chat/system-prompt";
 import { stripModelArtifacts } from "@/lib/chat/strip-model-output";
 import type { LeadDraft } from "@/lib/chat/types";
@@ -145,6 +150,27 @@ export async function POST(request: Request) {
 
     const focus = getQualificationFocus(draft, contactConsent);
     const systemPrompt = buildChatSystemPrompt(focus);
+
+    if (lastUser && isOffTopicUserMessage(lastUser.content)) {
+      const reply = polishQualificationReply(
+        getOffTopicReply(draft, contactConsent),
+        draft,
+        contactConsent,
+      );
+      const normalized = normalizeLeadDraft(draft);
+      const qualificationComplete = isQualificationComplete(draft);
+
+      return NextResponse.json({
+        message: reply,
+        lead: draft,
+        qualificationComplete,
+        askContactConsent:
+          qualificationComplete && contactConsent === "none",
+        showContactForm: false,
+        canSubmit: isLeadReadyForSubmit(normalized),
+      });
+    }
+
     const modelMessages: OpenAIMessage[] = [
       { role: "system", content: systemPrompt },
       ...parsed.data.messages.map((m) => ({
@@ -157,9 +183,13 @@ export async function POST(request: Request) {
     const structured = parseChatResponse(raw);
 
     const fallbackText = stripModelArtifacts(raw);
-    const message =
+    let message =
       structured?.message?.trim() ||
       (fallbackText.length > 3 ? fallbackText : null);
+
+    if (message && assistantReplyContainsCode(message)) {
+      message = getOffTopicReply(draft, contactConsent);
+    }
 
     if (!message) {
       return NextResponse.json(
