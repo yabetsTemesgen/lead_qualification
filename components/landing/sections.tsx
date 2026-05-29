@@ -86,12 +86,15 @@ export function HeroSection() {
             </ScrollReveal>
           </div>
 
-          <ScrollReveal speed={0.35} className="relative flex items-center justify-center lg:justify-end">
+          <ScrollReveal
+            speed={0.35}
+            className="relative flex w-full items-center justify-center lg:justify-end"
+          >
             <div
               className="pointer-events-none absolute inset-0 translate-x-4 translate-y-4 rounded-xl bg-white/[0.04] blur-3xl"
               aria-hidden
             />
-            <div className="relative w-full max-w-lg overflow-hidden rounded-xl border border-white/10 shadow-2xl shadow-black/50 ring-1 ring-white/10">
+            <div className="relative mx-auto w-full max-w-lg overflow-hidden rounded-xl border border-white/10 shadow-2xl shadow-black/50 ring-1 ring-white/10 lg:mx-0">
               <Image
                 src="/hero.png"
                 alt="Wipuu Labs team collaborating on software development"
